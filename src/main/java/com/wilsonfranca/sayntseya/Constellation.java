@@ -8,7 +8,7 @@ public enum Constellation {
     PEGASUS(1, "Pegasus"),
     DRAGON(2, "Dragon"),
     ANDROMEDA(3, "Andromeda"),
-    SWAN(4, "Swan");
+    CYGNUS(4, "Cygnus");
 
     private final String description;
     private final int id;

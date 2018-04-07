@@ -46,7 +46,7 @@ public class Campaign {
         Player player = null;
         String name = null;
         Constellation constellation = null;
-
+        boolean constellationChose = false;
         Scanner scanner = new Scanner(System.in);
         do {
             System.out.println("What will be the name of your Knight?");
@@ -55,23 +55,47 @@ public class Campaign {
 
         do {
             try {
+
                 System.out.println("What will be constellation of you Knight? Choose one of the bellow:");
                 Arrays.asList(Constellation.values())
                         .stream()
                         .forEach(constell -> System.out.println(String.format("%d) %s", constell.getId(), constell.getDescription())));
                 constellation = Constellation.getById(scanner.nextInt());
                 scanner.nextLine();
+                constellationBanner(constellation);
+                System.out.println(String.format("Do you want to continue with %s constellation? [Y/N]", constellation.getDescription()));
+                String constellationContinue = scanner.nextLine();
+                constellationChose = "Y".equalsIgnoreCase(constellationContinue);
             } catch (IllegalArgumentException e) {
                 // YOU ENTERED A INVALID ID
                 System.out.println("You have chosen a invalid constellation! Try again.");
             }
-        } while (constellation == null);
+        } while (constellation == null || !constellationChose);
 
         player = new Player(name, constellation);
 
         System.out.println(String.format("Nice! You're now %s Knight of %s", name, constellation.getDescription()));
 
         return player;
+    }
+
+    private void constellationBanner(Constellation constellation) {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        String path = classLoader.getResource(String.format("character/%s_banner.txt",
+                constellation.getDescription().toLowerCase())).getPath();
+
+        try (Stream<String> stringStream = Files.lines(Paths.get(path))) {
+
+            String banner = stringStream
+                    .filter(s -> !"".equals(s) && s != null)
+                    .collect(Collectors.joining("\n"));
+            System.out.println(banner);
+
+        } catch (IOException e) {
+            throw new IllegalStateException("There is a problem loading the menu options file");
+        }
     }
 
     public void newPlayerBanner() {
@@ -113,7 +137,7 @@ public class Campaign {
                     Files.newOutputStream(Files.createFile(path), CREATE, APPEND))) {
 
                 // Player data
-                String s = String.format("name:%s constellation: %s", player.getName(), player.getConstellation());
+                String s = player.toString();
 
                 byte data[] = s.getBytes();
 

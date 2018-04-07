@@ -1,0 +1,6 @@
+:::::::Cygnus starts with 20 health points:::::::
+:Everytime he hits an enemy with a Diamong Dust::
+:::::::::the enemy loses 1 health point::::::::::
+:::After a battle he recovers 1 health points::::
+::::::::::::and 1 experience point:::::::::::::::
+:::::::::::::::::::::::::::::::::::::::::::::::::
