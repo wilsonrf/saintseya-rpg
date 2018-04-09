@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -25,13 +26,17 @@ public class Quest {
 
     private boolean completed;
 
-    List<QuestPart> questParts;
+    Set<QuestPart> questParts;
 
-    public Quest(final Player player, String questId, QuestPart... questParts) {
+    public Quest(final Player player, String questId) {
         this.id = questId;
         this.player = player;
         this.createdDate = Instant.now();
-        Arrays.asList(questParts).stream().forEach(questPart -> this.questParts.add(questPart));
+//        Arrays.asList(questParts).stream().forEach(questPart -> this.questParts.add(questPart));
+    }
+
+    public String getId() {
+        return id;
     }
 
     public boolean isStarted() {
@@ -45,40 +50,59 @@ public class Quest {
     public void start() {
         this.started  = true;
         while (!player.isDead() && !isCompleted()) {
-
+            loadQuestBanner(this.id);
+            loadQuestParts(this.id);
+            Iterator<QuestPart> partIterator = questParts.iterator();
+            while (partIterator.hasNext()) {
+                QuestPart questPart = partIterator.next();
+                questPart.start();
+            }
         }
     }
 
-    protected void load() {
+    private void loadQuestParts(String id) {
 
         ClassLoader classLoader = getClass().getClassLoader();
 
-        String dataPath = classLoader.getResource(String.format("data/%s.data", id.toLowerCase())).getPath();
-        String partsPath = classLoader.getResource(String.format("data/%s_part.data", id.toLowerCase())).getPath();
-        String optionsPath = classLoader.getResource(String.format("data/%s_part_options.data", id.toLowerCase())).getPath();
+        String path = classLoader.getResource(String.format("data/%s_part.data",
+                id.toLowerCase())).getPath();
 
-        try (Stream<String> dataStream = Files.lines(Paths.get(dataPath));
-             Stream<String> partsStream = Files.lines(Paths.get(partsPath));
-             Stream<String> optionsStream = Files.lines(Paths.get(optionsPath))) {
+        try (Stream<String> stringStream = Files.lines(Paths.get(path))) {
 
-            String id = dataStream
+            questParts = stringStream
                     .filter(s -> !"".equals(s) && s != null)
-                    .map(s -> s.split(";"))
-                    .flatMap(Arrays::stream)
-                    .filter(s -> s.contains("id"))
-                    .map(s -> s.substring(s.indexOf(":") + 1, s.length()))
-                    .filter(s -> this.id.equalsIgnoreCase(s))
-                    .findFirst()
-                    .orElseThrow(IllegalArgumentException::new);
-            partsStream
-                    .filter(s -> !"".equals(s) && s != null)
-                    .map(s -> s.split(";"))
-                    .map(Arrays::toString)
-                    .forEach(System.out::println);
+                    .map(line -> line.split(";"))
+                    .map(strings -> new QuestPart(strings))
+                    .collect(Collectors.toSet());
+                    //TODO create collector to linkedlist of parts
 
         } catch (IOException e) {
-            throw new IllegalStateException("There is a problem loading the quest data file");
+            throw new IllegalStateException("There is a problem loading the quest banner file");
         }
 
     }
+
+    private void loadQuestBanner(String id) {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        String path = classLoader.getResource(String.format("quest/%s_banner.txt",
+                id.toLowerCase())).getPath();
+
+        try (Stream<String> stringStream = Files.lines(Paths.get(path))) {
+
+            String banner = stringStream
+                    .filter(s -> !"".equals(s) && s != null)
+                    .collect(Collectors.joining("\n"));
+            System.out.println(banner);
+
+        } catch (IOException e) {
+            throw new IllegalStateException("There is a problem loading the quest banner file");
+        }
+
+    }
+
+
+
+
 }

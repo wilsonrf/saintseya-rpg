@@ -9,21 +9,44 @@ import java.util.List;
  */
 public class QuestPart {
 
-    private Quest quest;
+    private String id;
 
-    private List<QuestPartOption> questPartOptions;
+    private String parent;
 
-    public QuestPart(Quest quest, QuestPartOption... questPartOptions) {
-        this.quest = quest;
-        this.questPartOptions = new LinkedList<>();
-        Arrays.asList(questPartOptions).stream().forEach(q -> this.questPartOptions.add(q));
+    private String next;
+
+    private boolean completed;
+
+    private LinkedList<QuestPartOption> questPartOptions;
+
+    public QuestPart(String... properties){
+        Arrays.asList(properties)
+                .stream()
+                .forEach(property -> {
+                    if(property.contains("id")) {
+                        this.id = property.substring(property.indexOf(":") + 1, property.length());
+                    }
+                    if(property.contains("parent")) {
+                        this.parent = property.substring(property.indexOf(":") + 1, property.length());
+                    }
+                    if(property.contains("next")) {
+                        this.next = property.substring(property.indexOf(":") + 1, property.length());
+                    }
+                });
     }
 
-    public Quest getQuest() {
-        return quest;
-    }
 
     public List<QuestPartOption> getQuestPartOptions() {
         return questPartOptions;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void start() {
+        while (!this.isCompleted()) {
+
+        }
     }
 }
