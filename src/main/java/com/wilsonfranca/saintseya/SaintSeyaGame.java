@@ -1,4 +1,4 @@
-package com.wilsonfranca.sayntseya;
+package com.wilsonfranca.saintseya;
 
 /**
  * Created by wilson.franca on 06/04/18.

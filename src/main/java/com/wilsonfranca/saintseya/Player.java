@@ -1,4 +1,4 @@
-package com.wilsonfranca.sayntseya;
+package com.wilsonfranca.saintseya;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,6 +31,10 @@ public class Player {
         this.name = name;
         this.constellation = constellation;
         loadConstellationData();
+    }
+
+    public boolean isDead() {
+        return healthPoints == 0;
     }
 
     private void loadConstellationData() {

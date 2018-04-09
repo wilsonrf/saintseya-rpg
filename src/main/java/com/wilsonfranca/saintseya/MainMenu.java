@@ -1,4 +1,4 @@
-package com.wilsonfranca.sayntseya;
+package com.wilsonfranca.saintseya;
 
 import java.io.IOException;
 import java.nio.file.Files;

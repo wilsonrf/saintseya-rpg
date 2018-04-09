@@ -1,4 +1,4 @@
-package com.wilsonfranca.sayntseya;
+package com.wilsonfranca.saintseya;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -37,7 +37,9 @@ public class Campaign {
             System.out.println("Saving the player and the game...");
             save();
         }
-        
+
+        Quest quest = new Quest(player, "fenix_quest");
+        quest.start();
 
     }
 
