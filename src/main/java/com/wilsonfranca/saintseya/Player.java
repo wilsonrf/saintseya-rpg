@@ -141,7 +141,9 @@ public class Player {
 
         String savesPath = savesFilePath.getParent().toString();
 
-        String stringPath = String.format("%s/%s.data", savesPath, this.getName().toLowerCase());
+        String stringPath = String.format("%s/%s_%s.data", savesPath, this.getName().toLowerCase(),
+                this.getConstellation().getDescription().toLowerCase());
+
         Path path = Paths.get(stringPath);
 
         try(OutputStream out = new BufferedOutputStream(
@@ -159,6 +161,23 @@ public class Player {
             throw new IllegalStateException("Error creating file.");
         }
 
+    }
 
+    public boolean exists() {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        String savesString = classLoader.getResource("saves/saves.data").getPath();
+
+        Path savesFilePath = Paths.get(savesString);
+
+        String savesPath = savesFilePath.getParent().toString();
+
+        String stringPath = String.format("%s/%s_%s.data", savesPath, this.getName().toLowerCase(),
+                this.getConstellation().getDescription().toLowerCase());
+
+        Path path = Paths.get(stringPath);
+
+        return Files.exists(path);
     }
 }

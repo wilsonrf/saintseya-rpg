@@ -43,7 +43,6 @@ public class Quest {
         this.player = player;
         this.createdDate = Instant.now();
         this.lastSaveDate = Instant.now();
-//        Arrays.asList(questParts).stream().forEach(questPart -> this.questParts.add(questPart));
     }
 
     public String getId() {

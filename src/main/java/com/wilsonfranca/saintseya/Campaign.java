@@ -1,19 +1,13 @@
 package com.wilsonfranca.saintseya;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static java.nio.file.StandardOpenOption.APPEND;
-import static java.nio.file.StandardOpenOption.CREATE;
 
 
 /**
@@ -32,7 +26,6 @@ public class Campaign {
         if(player == null) {
             newPlayerBanner();
             player = createKnight();
-            System.out.println("Saving the player and the game...");
         }
 
         Quest quest = new Quest(player, "fenix_quest");
@@ -47,35 +40,52 @@ public class Campaign {
         Constellation constellation = null;
         boolean constellationChose = false;
         Scanner scanner = new Scanner(System.in);
-        do {
-            System.out.println("What will be the name of your Knight?");
-            name = scanner.nextLine();
-        } while (name == null || "".equals(name));
 
         do {
-            try {
+            do {
+                System.out.println("What will be the name of your Knight?");
+                name = scanner.nextLine();
+            } while (name == null || "".equals(name));
 
-                System.out.println("What will be constellation of you Knight? Choose one of the bellow:");
-                Arrays.asList(Constellation.values())
-                        .stream()
-                        .forEach(constell -> System.out.println(String.format("%d) %s", constell.getId(), constell.getDescription())));
-                constellation = Constellation.getById(scanner.nextInt());
-                scanner.nextLine();
-                constellationBanner(constellation);
-                System.out.println(String.format("Do you want to continue with %s constellation? [Y/N]", constellation.getDescription()));
-                String constellationContinue = scanner.nextLine();
-                constellationChose = "Y".equalsIgnoreCase(constellationContinue);
-            } catch (IllegalArgumentException e) {
-                // YOU ENTERED A INVALID ID
-                System.out.println("You have chosen a invalid constellation! Try again.");
+            do {
+                try {
+
+                    System.out.println("What will be constellation of you Knight? Choose one of the bellow:");
+                    Arrays.asList(Constellation.values())
+                            .stream()
+                            .forEach(constell -> System.out.println(String.format("%d) %s", constell.getId(), constell.getDescription())));
+                    constellation = Constellation.getById(scanner.nextInt());
+                    scanner.nextLine();
+                    constellationBanner(constellation);
+                    System.out.println(String.format("Do you want to continue with %s constellation? [Y/N]", constellation.getDescription()));
+                    String constellationContinue = scanner.nextLine();
+                    constellationChose = "Y".equalsIgnoreCase(constellationContinue);
+                } catch (IllegalArgumentException e) {
+                    // YOU ENTERED A INVALID ID
+                    System.out.println("You have chosen a invalid constellation! Try again.");
+                }
+            } while (constellation == null || !constellationChose);
+
+            player = new Player(name, constellation);
+
+            if (player.exists()) {
+                String overwrite;
+                do {
+                    System.out.printf("The player %s of %s already exists!", name, constellation.getDescription());
+                    System.out.println("[O]verwrite | [R]estart");
+                    overwrite = scanner.nextLine();
+                } while (overwrite == null || "R".equalsIgnoreCase(overwrite) || "O".equalsIgnoreCase(overwrite));
+                if ("O".equalsIgnoreCase(overwrite)) {
+                    System.out.println(String.format("Nice! You're now %s Knight of %s", name, constellation.getDescription()));
+                    player.save();
+                } else {
+                    player = null;
+                }
+            } else {
+                System.out.println(String.format("Nice! You're now %s Knight of %s", name, constellation.getDescription()));
+                player.save();
             }
-        } while (constellation == null || !constellationChose);
-
-        player = new Player(name, constellation);
-
-        System.out.println(String.format("Nice! You're now %s Knight of %s", name, constellation.getDescription()));
-
-        player.save();
+        } while (player == null);
 
         return player;
     }
@@ -116,39 +126,5 @@ public class Campaign {
             throw new IllegalStateException("There is a problem loading the menu options file");
         }
 
-    }
-
-    public void save() {
-
-        ClassLoader classLoader = getClass().getClassLoader();
-
-        String savesString = classLoader.getResource("saves/saves.data").getPath();
-
-        Path savesFilePath = Paths.get(savesString);
-
-        String savesPath = savesFilePath.getParent().toString();
-
-        String stringPath = String.format("%s/%s.data", savesPath, player.getName().toLowerCase());
-        Path path = Paths.get(stringPath);
-
-        if(!Files.exists(path)) {
-
-            try (OutputStream out = new BufferedOutputStream(
-                    Files.newOutputStream(Files.createFile(path), CREATE, APPEND))) {
-
-                // Player data
-                String s = player.toString();
-
-                byte data[] = s.getBytes();
-
-                out.write(data, 0, data.length);
-
-                System.out.println(String.format("File saved at %s", path));
-
-            } catch (IOException e) {
-                throw new IllegalStateException("Error creating file.");
-            }
-
-        }
     }
 }
