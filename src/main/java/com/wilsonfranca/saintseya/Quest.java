@@ -1,13 +1,19 @@
 package com.wilsonfranca.saintseya;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**
  * Created by wilson on 07/04/18.
@@ -26,12 +32,17 @@ public class Quest {
 
     private boolean completed;
 
-    Set<QuestPart> questParts;
+    String currentPart;
+
+    TreeMap<String, TreeMap<String, QuestPart>> questParts = new TreeMap<>();
+
+    Set<QuestPart> parts;
 
     public Quest(final Player player, String questId) {
         this.id = questId;
         this.player = player;
         this.createdDate = Instant.now();
+        this.lastSaveDate = Instant.now();
 //        Arrays.asList(questParts).stream().forEach(questPart -> this.questParts.add(questPart));
     }
 
@@ -49,45 +60,50 @@ public class Quest {
 
     public void start() {
         this.started  = true;
+        loadQuestBanner();
         while (!player.isDead() && !isCompleted()) {
-            loadQuestBanner(this.id);
-            loadQuestParts(this.id);
-            Iterator<QuestPart> partIterator = questParts.iterator();
-            while (partIterator.hasNext()) {
-                QuestPart questPart = partIterator.next();
-                questPart.start();
+            if(currentPart == null) {
+                currentPart = String.format("%s_part_%s", this.id.toLowerCase(), "1");
+            }
+            QuestPart questPart = loadPart(currentPart);
+            currentPart = questPart.start(player);
+            try {
+                save();
+            } catch (RuntimeException e) {
+                System.err.println("Error on save the quest!");
             }
         }
     }
 
-    private void loadQuestParts(String id) {
+    private QuestPart loadPart(String id) {
 
         ClassLoader classLoader = getClass().getClassLoader();
 
         String path = classLoader.getResource(String.format("data/%s_part.data",
-                id.toLowerCase())).getPath();
+                this.id.toLowerCase())).getPath();
 
         try (Stream<String> stringStream = Files.lines(Paths.get(path))) {
 
-            questParts = stringStream
+            return stringStream
                     .filter(s -> !"".equals(s) && s != null)
                     .map(line -> line.split(";"))
-                    .map(strings -> new QuestPart(strings))
-                    .collect(Collectors.toSet());
-                    //TODO create collector to linkedlist of parts
-
+                    .map(strings -> new QuestPart(this, strings))
+                    .filter(questPart -> {
+                        return questPart.getId().equals(id);
+                    })
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException(id));
         } catch (IOException e) {
             throw new IllegalStateException("There is a problem loading the quest banner file");
         }
-
     }
 
-    private void loadQuestBanner(String id) {
+    private void loadQuestBanner() {
 
         ClassLoader classLoader = getClass().getClassLoader();
 
         String path = classLoader.getResource(String.format("quest/%s_banner.txt",
-                id.toLowerCase())).getPath();
+                this.id.toLowerCase())).getPath();
 
         try (Stream<String> stringStream = Files.lines(Paths.get(path))) {
 
@@ -99,10 +115,56 @@ public class Quest {
         } catch (IOException e) {
             throw new IllegalStateException("There is a problem loading the quest banner file");
         }
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void save() {
+
+        this.lastSaveDate = Instant.now();
+
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        String savesString = classLoader.getResource("saves/saves.data").getPath();
+
+        Path savesFilePath = Paths.get(savesString);
+
+        String savesPath = savesFilePath.getParent().toString();
+
+        String stringPath = String.format("%s/%s_%s.data", savesPath, this.getPlayer().getName(),
+                this.id.toLowerCase());
+
+        Path path = Paths.get(stringPath);
+
+        try (OutputStream out = new BufferedOutputStream(
+                    Files.newOutputStream(path, CREATE, TRUNCATE_EXISTING))) {
+
+            // Quest data
+            String s = this.toString();
+
+            byte data[] = s.getBytes();
+
+            out.write(data, 0, data.length);
+
+            System.out.println(String.format("File saved at %s", path));
+
+        } catch (IOException e) {
+            throw new IllegalStateException("Error creating file.");
+        }
 
     }
 
-
-
-
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("id:").append(id).append(";");
+        sb.append("createdDate:").append(createdDate.toEpochMilli()).append(";");
+        sb.append("lastSaveDate:").append(lastSaveDate.toEpochMilli()).append(";");
+        sb.append("started:").append(started).append(";");
+        sb.append("completed:").append(completed).append(";");
+        sb.append("currentPart:").append(currentPart).append(";");
+        return sb.toString();
+    }
 }

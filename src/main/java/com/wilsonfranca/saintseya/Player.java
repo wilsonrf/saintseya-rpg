@@ -1,10 +1,16 @@
 package com.wilsonfranca.saintseya;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.stream.Stream;
+
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**
  * Created by wilson.franca on 06/04/18.
@@ -81,7 +87,78 @@ public class Player {
 
     @Override
     public String toString() {
-        return String.format("name:%s constellation:%s health_points:%d hit_points:%d recovery_xp:%d recovery_hp:%d",
-                name, constellation.getDescription().toLowerCase(), healthPoints, hitPoints, recoveryXpPoints, recoveryHpPoints);
+        return String.format("name:%s constellation:%s health_points:%d hit_points:%d experience_points:%d recovery_xp:%d recovery_hp:%d",
+                name, constellation.getDescription().toLowerCase(), healthPoints, hitPoints, experience, recoveryXpPoints, recoveryHpPoints);
+    }
+
+    public void addXp(int xp) {
+        if(xp > 0 && experience < 5) {
+            System.out.println(String.format("You got %d experience points!", xp));
+            this.experience += xp;
+            System.out.println(String.format("Now you have %d experience points!", this.experience));
+        } else {
+            this.experience = 0;
+            levelUp();
+        }
+        try {
+            save();
+        } catch (RuntimeException e) {
+            System.err.println("Error on save the player!");
+        }
+    }
+
+    public void addHp(int hp) {
+        if(hp > 0) {
+            System.out.printf("You got %d health points!", hp);
+            this.healthPoints += hp;
+            System.out.printf("Now you have %d experience points!", this.experience);
+            try {
+                save();
+            } catch (RuntimeException e) {
+                System.err.println("Error on save the player!");
+            }
+        }
+    }
+
+    private void levelUp() {
+        this.level++;
+        System.out.println("Level UP!");
+        System.out.printf("You're now on level %d.", this.level);
+        try {
+            save();
+        } catch (RuntimeException e) {
+            System.err.println("Error on save the player!");
+        }
+    }
+
+    public void save() {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        String savesString = classLoader.getResource("saves/saves.data").getPath();
+
+        Path savesFilePath = Paths.get(savesString);
+
+        String savesPath = savesFilePath.getParent().toString();
+
+        String stringPath = String.format("%s/%s.data", savesPath, this.getName().toLowerCase());
+        Path path = Paths.get(stringPath);
+
+        try(OutputStream out = new BufferedOutputStream(
+                    Files.newOutputStream(path, CREATE, TRUNCATE_EXISTING))) {
+            // Player data
+            String s = this.toString();
+
+            byte data[] = s.getBytes();
+
+            out.write(data, 0, data.length);
+
+            System.out.println(String.format("File saved at %s", path));
+
+        } catch (IOException e) {
+            throw new IllegalStateException("Error creating file.");
+        }
+
+
     }
 }

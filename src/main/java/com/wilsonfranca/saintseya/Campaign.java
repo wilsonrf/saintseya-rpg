@@ -6,10 +6,8 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,7 +33,6 @@ public class Campaign {
             newPlayerBanner();
             player = createKnight();
             System.out.println("Saving the player and the game...");
-            save();
         }
 
         Quest quest = new Quest(player, "fenix_quest");
@@ -77,6 +74,8 @@ public class Campaign {
         player = new Player(name, constellation);
 
         System.out.println(String.format("Nice! You're now %s Knight of %s", name, constellation.getDescription()));
+
+        player.save();
 
         return player;
     }
@@ -129,8 +128,7 @@ public class Campaign {
 
         String savesPath = savesFilePath.getParent().toString();
 
-        String stringPath = String.format("%s/%s_%s.data", savesPath, player.getName().toLowerCase(),
-                new SimpleDateFormat("ddMMyyyyHHmmss").format(Date.from(dateCreated)));
+        String stringPath = String.format("%s/%s.data", savesPath, player.getName().toLowerCase());
         Path path = Paths.get(stringPath);
 
         if(!Files.exists(path)) {

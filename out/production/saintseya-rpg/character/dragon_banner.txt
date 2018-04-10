@@ -1,0 +1,6 @@
+::::::Dragon starts with 15 health points:::::::
+:Everytime he hits an enemy with a Rozan Rising:
+:::::Dragon the enemy loses 1 health point::::::
+:::After a battle he recovers 2 health points:::
+::::::::::::and 1 experience point::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::
