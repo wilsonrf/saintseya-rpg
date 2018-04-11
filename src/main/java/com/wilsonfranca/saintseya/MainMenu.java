@@ -1,8 +1,8 @@
 package com.wilsonfranca.saintseya;
 
+import com.wilsonfranca.saintseya.util.FilesLoader;
+
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,16 +12,17 @@ import java.util.stream.Stream;
  */
 public class MainMenu {
 
+    private FilesLoader filesLoader;
+
+    public MainMenu() {
+        this.filesLoader = new FilesLoader();
+    }
 
     public List<MenuOption> getMenuOptions() {
 
         List<MenuOption> menuOptions ;
 
-        ClassLoader classLoader = getClass().getClassLoader();
-
-        String path = classLoader.getResource("data/menuoptions.txt").getPath();
-
-        try (Stream<String> stringStream = Files.lines(Paths.get(path))) {
+        try (Stream<String> stringStream = filesLoader.loadFileAsStringStream("data/menuoptions.txt")) {
 
             menuOptions = stringStream
                     .filter(s -> !"".equals(s) && s != null)
@@ -40,11 +41,7 @@ public class MainMenu {
 
         String banner;
 
-        ClassLoader classLoader = getClass().getClassLoader();
-
-        String path = classLoader.getResource("misc/banner.txt").getPath();
-
-        try (Stream<String> stringStream = Files.lines(Paths.get(path))) {
+        try (Stream<String> stringStream = filesLoader.loadFileAsStringStream("misc/banner.txt")) {
 
             banner = stringStream
                     .filter(s -> !"".equals(s) && s != null)
