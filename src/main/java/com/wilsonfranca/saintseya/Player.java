@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import static java.nio.file.StandardOpenOption.CREATE;
@@ -40,7 +41,7 @@ public class Player {
     }
 
     public boolean isDead() {
-        return healthPoints == 0;
+        return healthPoints < 1;
     }
 
     private void loadConstellationData() {
@@ -155,8 +156,6 @@ public class Player {
 
             out.write(data, 0, data.length);
 
-            System.out.println(String.format("File saved at %s", path));
-
         } catch (IOException e) {
             throw new IllegalStateException("Error creating file.");
         }
@@ -179,5 +178,51 @@ public class Player {
         Path path = Paths.get(stringPath);
 
         return Files.exists(path);
+    }
+
+    public void attack(Enemy enemy) {
+        Random random = new Random();
+        int playerDice = random.ints(1, 6).findFirst().getAsInt();
+        int enemyDice = random.ints(1, 6).findFirst().getAsInt();
+        if(playerDice > enemyDice) {
+            System.out.println(String.format("You hit %s!", enemy.getName()));
+            enemy.hit(this.hitPoints);
+            System.out.println(String.format("%s Health Points: %d", this.getName(), this.getHealthPoints()));
+            System.out.println(String.format("%s Health Points: %d", enemy.getName(), enemy.getHealthPoints()));
+
+        } else {
+            System.out.println("You didn't hit the enemy!");
+        }
+    }
+
+    public boolean runAway(Enemy enemy) {
+
+        boolean runWay = false;
+
+        Random random = new Random();
+        int playerDice = random.ints(1, 6).findFirst().getAsInt();
+        int enemyDice = random.ints(1, 6).findFirst().getAsInt();
+        if(playerDice > enemyDice) {
+            runWay = true;
+            System.out.println("You ran way!");
+        } else {
+            System.out.println("You didn't ran way!");
+        }
+
+        return runWay;
+
+    }
+
+    public void won() {
+        this.addXp(recoveryXpPoints);
+        this.addHp(recoveryHpPoints);
+    }
+
+    public void hit(int hitPoints) {
+        this.healthPoints -= hitPoints;
+    }
+
+    public int getHealthPoints() {
+        return healthPoints;
     }
 }

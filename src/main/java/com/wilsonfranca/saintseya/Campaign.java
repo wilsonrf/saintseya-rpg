@@ -74,7 +74,7 @@ public class Campaign {
                     System.out.printf("The player %s of %s already exists!", name, constellation.getDescription());
                     System.out.println("[O]verwrite | [R]estart");
                     overwrite = scanner.nextLine();
-                } while (overwrite == null || "R".equalsIgnoreCase(overwrite) || "O".equalsIgnoreCase(overwrite));
+                } while (overwrite == null || (!"R".equalsIgnoreCase(overwrite) && !"O".equalsIgnoreCase(overwrite)));
                 if ("O".equalsIgnoreCase(overwrite)) {
                     System.out.println(String.format("Nice! You're now %s Knight of %s", name, constellation.getDescription()));
                     player.save();

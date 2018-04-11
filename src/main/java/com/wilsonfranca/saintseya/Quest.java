@@ -132,7 +132,8 @@ public class Quest {
 
         String savesPath = savesFilePath.getParent().toString();
 
-        String stringPath = String.format("%s/%s_%s.data", savesPath, this.getPlayer().getName(),
+        String stringPath = String.format("%s/%s_%s_%s.data", savesPath, this.getPlayer().getName(),
+                this.getPlayer().getConstellation().getDescription().toLowerCase(),
                 this.id.toLowerCase());
 
         Path path = Paths.get(stringPath);
@@ -146,8 +147,6 @@ public class Quest {
             byte data[] = s.getBytes();
 
             out.write(data, 0, data.length);
-
-            System.out.println(String.format("File saved at %s", path));
 
         } catch (IOException e) {
             throw new IllegalStateException("Error creating file.");
