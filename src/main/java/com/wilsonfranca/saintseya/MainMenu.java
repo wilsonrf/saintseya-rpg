@@ -1,8 +1,8 @@
 package com.wilsonfranca.saintseya;
 
+import com.wilsonfranca.saintseya.util.FileLoadException;
 import com.wilsonfranca.saintseya.util.FilesLoader;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,7 +15,7 @@ public class MainMenu {
     private FilesLoader filesLoader;
 
     public MainMenu() {
-        this.filesLoader = new FilesLoader();
+        this.filesLoader = new FilesLoader(this.getClass().getClassLoader());
     }
 
     public List<MenuOption> getMenuOptions() {
@@ -31,7 +31,7 @@ public class MainMenu {
 
             return menuOptions;
 
-        } catch (IOException e) {
+        } catch (FileLoadException e) {
             throw new IllegalStateException("There is a problem loading the menu options file");
         }
 
@@ -49,7 +49,7 @@ public class MainMenu {
 
             return banner;
 
-        } catch (IOException e) {
+        } catch (FileLoadException e) {
             throw new IllegalStateException("There is a problem loading the banner file");
         }
 
