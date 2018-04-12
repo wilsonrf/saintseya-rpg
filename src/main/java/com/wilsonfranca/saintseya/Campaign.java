@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,9 +18,35 @@ public class Campaign {
 
     private Player player;
 
+    private Set<Quest> quests;
+
     private Instant dateCreated;
 
-    public Campaign(){}
+    private Instant savedDate;
+
+    public Campaign(){
+        this.dateCreated = Instant.now();
+        this.savedDate = this.dateCreated;
+    }
+
+    public Campaign(final Player player, final Quest... quests) {
+        this();
+        this.player = player;
+        this.quests = Arrays.asList(quests).stream().collect(Collectors.toSet());
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Instant getDateCreated() {
+        return dateCreated;
+    }
+
+    public Instant getSavedDate() {
+        return savedDate;
+    }
+
 
     public void start() {
         dateCreated = Instant.now();
@@ -30,6 +57,17 @@ public class Campaign {
 
         Quest quest = new Quest(player, "fenix_quest");
         quest.start();
+
+    }
+
+    public void save() {
+
+        // only save if it has a quest
+        if(quests != null && !quests.isEmpty()) {
+            this.savedDate = Instant.now();
+        } else {
+            throw new IllegalStateException("Problem saving a Campaign without a quest");
+        }
 
     }
 
@@ -126,5 +164,9 @@ public class Campaign {
             throw new IllegalStateException("There is a problem loading the menu options file");
         }
 
+    }
+
+    public Set<Quest> getQuests() {
+        return quests;
     }
 }
