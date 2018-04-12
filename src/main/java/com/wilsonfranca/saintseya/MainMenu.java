@@ -18,7 +18,7 @@ public class MainMenu {
         this.filesLoader = new FilesLoader(this.getClass().getClassLoader());
     }
 
-    public List<MenuOption> getMenuOptions() {
+    private List<MenuOption> getMenuOptions() {
 
         List<MenuOption> menuOptions ;
 
@@ -53,6 +53,16 @@ public class MainMenu {
             throw new IllegalStateException("There is a problem loading the banner file");
         }
 
+    }
+
+    public String options() {
+
+        String options = this.getMenuOptions()
+                .stream()
+                .map(menuOption -> String.format("%d) %s", menuOption.getId(), menuOption.getText()))
+                .collect(Collectors.joining("\n"));
+
+        return options;
     }
 
 }

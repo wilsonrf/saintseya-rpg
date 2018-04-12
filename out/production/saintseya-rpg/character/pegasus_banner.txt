@@ -1,6 +1,0 @@
-::::::::::::::::::::::::::::::::::::::::::::::::::
-:Pegasus starts the game with 15 health points::::
-:Everytime Seya hits an enemy with a Meteor Punch:
-:Punch of Pegasus the enemy loses 2 health points:
-::::After a battle he gains 1 experience point::::
-::::::::::::::::::::::::::::::::::::::::::::::::::

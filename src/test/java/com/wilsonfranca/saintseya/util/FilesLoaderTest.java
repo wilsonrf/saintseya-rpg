@@ -11,12 +11,15 @@ import java.nio.file.Files;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
  * Created by wilson.franca on 11/04/18.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Files.class})
+@PrepareForTest({FilesLoader.class})
 public class FilesLoaderTest {
 
     FilesLoader filesLoader;
@@ -47,14 +50,14 @@ public class FilesLoaderTest {
 
     }
 
-//    @Test(expected = FileLoadException.class)
-//    public void test_not_load_a_stream_if_there_is_ioexception_and_got_file_load_exption() {
-//
-//        mockStatic(Files.class);
-//
-//        doThrow(new IOException()).when(Files.class);
-//
-//        Stream<String> stringStream = filesLoader.loadFileAsStringStream("misc/banner_test_text.txt");
-//
-//    }
+    @Test(expected = FileLoadException.class)
+    public void test_not_load_a_stream_if_there_is_ioexception_and_got_file_load_exption() throws IOException {
+
+        mockStatic(Files.class);
+
+        when(Files.lines(any())).thenThrow(IOException.class);
+
+        Stream<String> stringStream = filesLoader.loadFileAsStringStream("misc/banner_test_text.txt");
+
+    }
 }

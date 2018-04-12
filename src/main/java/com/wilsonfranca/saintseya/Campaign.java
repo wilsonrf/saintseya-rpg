@@ -16,6 +16,8 @@ import java.util.stream.Stream;
  */
 public class Campaign {
 
+    private String id;
+
     private Player player;
 
     private Set<Quest> quests;
@@ -35,6 +37,10 @@ public class Campaign {
         this.quests = Arrays.asList(quests).stream().collect(Collectors.toSet());
     }
 
+    public String getId() {
+        return id;
+    }
+
     public Player getPlayer() {
         return player;
     }
@@ -45,6 +51,10 @@ public class Campaign {
 
     public Instant getSavedDate() {
         return savedDate;
+    }
+
+    public Set<Quest> getQuests() {
+        return quests;
     }
 
 
@@ -65,6 +75,7 @@ public class Campaign {
         // only save if it has a quest
         if(quests != null && !quests.isEmpty()) {
             this.savedDate = Instant.now();
+            this.id = this.getPlayer().getName().toLowerCase() + "_campaign";
         } else {
             throw new IllegalStateException("Problem saving a Campaign without a quest");
         }
@@ -164,9 +175,5 @@ public class Campaign {
             throw new IllegalStateException("There is a problem loading the menu options file");
         }
 
-    }
-
-    public Set<Quest> getQuests() {
-        return quests;
     }
 }

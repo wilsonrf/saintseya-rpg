@@ -1,6 +1,9 @@
 package com.wilsonfranca.saintseya.util;
 
+import com.wilsonfranca.saintseya.Game;
+
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,5 +41,10 @@ public class FilesLoader {
             throw new IllegalArgumentException(String.format("The file path %s does not exists", filePath));
         }
 
+    }
+
+    public OutputStream loadSaveFile(Game game) {
+
+        return null;
     }
 }

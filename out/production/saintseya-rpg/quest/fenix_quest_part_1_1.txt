@@ -1,9 +1,0 @@
-:::::::::::::::::::::::::::::::::::::::::::::::::
-:::::::::::::::::::::::::::::::::::::::::::::::::
-::You arrived at the training center. Keiko and::
-::::::::::::::Shun Rey are there.::::::::::::::::
-:::::::::::::::::::::::::::::::::::::::::::::::::
-1) Talk to Keiko
-2) Talk to Shun Rey
-3) Train with Tatsumi
-4) Back to the City

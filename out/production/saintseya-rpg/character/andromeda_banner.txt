@@ -1,6 +1,0 @@
-::::::Andromeda starts with 15 health points:::::
-:Everytime he hits an enemy with your Steel ball:
-::and Chain the enemy loses 1 health point:::::::
-:::After a battle he recovers 1 health points::::
-::::::::::::and 2 experience point:::::::::::::::
-:::::::::::::::::::::::::::::::::::::::::::::::::

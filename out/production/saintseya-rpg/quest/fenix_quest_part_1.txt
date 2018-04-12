@@ -1,9 +1,0 @@
-:::::::::::::::::::::::::::::::::::::::::::::::::
-:::::::::::::::::::::::::::::::::::::::::::::::::
-:::You are at the city going after Ikki and The::
-::Black Saints. You noticed that some are going::
-:::::::::::::to the city's port.:::::::::::::::::
-:::::::::::::::::::::::::::::::::::::::::::::::::
-::::::::::::What you want to do?:::::::::::::::::
-1) Go back to the training center
-2) Go directly to the city's port

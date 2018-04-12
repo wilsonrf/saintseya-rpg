@@ -8,7 +8,7 @@ import java.nio.file.Path;
  */
 public class FileLoadException extends RuntimeException {
 
-    private Path path;
+    private transient Path path;
 
     public FileLoadException(String message, Path path, IOException e) {
         super(message, e);

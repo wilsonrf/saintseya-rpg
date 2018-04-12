@@ -1,5 +1,7 @@
 package com.wilsonfranca.saintseya;
 
+import com.wilsonfranca.saintseya.util.FilesLoader;
+
 import java.util.Scanner;
 
 /**
@@ -7,18 +9,26 @@ import java.util.Scanner;
  */
 public class Game {
 
+    private final MainMenu mainMenu;
+
+    private Campaign campaign;
+
+    private FilesLoader filesLoader;
+
+    public Game() {
+        mainMenu = new MainMenu();
+        filesLoader = new FilesLoader(this.getClass().getClassLoader());
+    }
+
     public void play() {
 
-        MainMenu mainMenu = new MainMenu();
         System.out.println(mainMenu.banner());
-        mainMenu.getMenuOptions()
-                .stream()
-                .forEach(menuOption -> System.out.println(String.format("%d) %s", menuOption.getId(), menuOption.getText())));
+        System.out.println(mainMenu.options());
         Scanner scanner = new Scanner(System.in);
         int option = scanner.nextInt();
         if(option > 0 && option != 3) {
             if(option == 1) {
-                Campaign campaign = new Campaign();
+                campaign = new Campaign();
                 campaign.start();
             }
 
@@ -33,5 +43,13 @@ public class Game {
 
     private void goodBye() {
         System.out.println("Good bye!");
+    }
+
+    public Campaign getCampaign() {
+        return campaign;
+    }
+
+    public void load(String player_campaign) {
+
     }
 }
