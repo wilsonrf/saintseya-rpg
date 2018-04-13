@@ -1,5 +1,8 @@
 package com.wilsonfranca.saintseya;
 
+import com.wilsonfranca.saintseya.util.FilesHelper;
+import com.wilsonfranca.saintseya.util.Persistent;
+
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,7 +19,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 /**
  * Created by wilson.franca on 06/04/18.
  */
-public class Player {
+public class Player implements Persistent<Player> {
 
     private String name;
 
@@ -34,17 +37,79 @@ public class Player {
 
     private int recoveryHpPoints;
 
+    FilesHelper filesHelper;
+
     public Player(String name, Constellation constellation) {
         this.name = name;
         this.constellation = constellation;
+        this.filesHelper = new FilesHelper();
         loadConstellationData();
+    }
+
+    public Player(String... properties) {
+        Arrays.asList(properties)
+                .stream()
+                .map(s -> s.split(" "))
+                .flatMap(Arrays::stream)
+                .forEach(property -> {
+
+                    if(property.contains("name")) {
+                        this.name = property.substring(property.indexOf(":") + 1, property.length());
+                    }
+
+                    if(property.contains("constellation")) {
+                        String constellation = property.substring(property.indexOf(":") + 1, property.length());
+                        this.constellation = Constellation.getByName(constellation);
+                    }
+
+                    if(property.contains("health_points")) {
+                        this.healthPoints = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                    }
+
+                    if(property.contains("hit_points")) {
+                        this.hitPoints = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                    }
+
+                    if(property.contains("experience_points")) {
+                        this.experience = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                    }
+
+                    if(property.contains("recovery_xp")) {
+                        this.recoveryXpPoints = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                    }
+
+                    if(property.contains("recovery_hp")) {
+                        this.recoveryHpPoints = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                    }
+
+                });
+    }
+
+    public Player(byte[] data) {
+        this(new String(data));
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Constellation getConstellation() {
+        return constellation;
+    }
+
+    public int getHealthPoints() {
+        return healthPoints;
+    }
+
+    public void setFilesHelper(FilesHelper filesHelper) {
+        this.filesHelper = filesHelper;
     }
 
     public boolean isDead() {
         return healthPoints < 1;
     }
 
-    private void loadConstellationData() {
+    protected void loadConstellationData() {
 
         ClassLoader classLoader = getClass().getClassLoader();
 
@@ -76,20 +141,6 @@ public class Player {
         } catch (IOException e) {
             throw new IllegalStateException("There is a problem loading the constellation file");
         }
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Constellation getConstellation() {
-        return constellation;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("name:%s constellation:%s health_points:%d hit_points:%d experience_points:%d recovery_xp:%d recovery_hp:%d",
-                name, constellation.getDescription().toLowerCase(), healthPoints, hitPoints, experience, recoveryXpPoints, recoveryHpPoints);
     }
 
     public void addXp(int xp) {
@@ -130,36 +181,6 @@ public class Player {
         } catch (RuntimeException e) {
             System.err.println("Error on save the player!");
         }
-    }
-
-    public void save() {
-
-        ClassLoader classLoader = getClass().getClassLoader();
-
-        String savesString = classLoader.getResource("saves/saves.data").getPath();
-
-        Path savesFilePath = Paths.get(savesString);
-
-        String savesPath = savesFilePath.getParent().toString();
-
-        String stringPath = String.format("%s/%s_%s.data", savesPath, this.getName().toLowerCase(),
-                this.getConstellation().getDescription().toLowerCase());
-
-        Path path = Paths.get(stringPath);
-
-        try(OutputStream out = new BufferedOutputStream(
-                    Files.newOutputStream(path, CREATE, TRUNCATE_EXISTING))) {
-            // Player data
-            String s = this.toString();
-
-            byte data[] = s.getBytes();
-
-            out.write(data, 0, data.length);
-
-        } catch (IOException e) {
-            throw new IllegalStateException("Error creating file.");
-        }
-
     }
 
     public boolean exists() {
@@ -222,7 +243,57 @@ public class Player {
         this.healthPoints -= hitPoints;
     }
 
-    public int getHealthPoints() {
-        return healthPoints;
+    @Override
+    public String toString() {
+        return String.format("name:%s constellation:%s health_points:%d hit_points:%d experience_points:%d recovery_xp:%d recovery_hp:%d",
+                name, constellation.getDescription().toLowerCase(), healthPoints, hitPoints, experience, recoveryXpPoints, recoveryHpPoints);
+    }
+
+    @Override
+    public String getPersistentPath() {
+        return this.getName();
+    }
+
+    @Override
+    public byte[] getPersistentData() {
+        return this.toString().getBytes();
+    }
+
+    @Override
+    public void save() {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        String savesString = classLoader.getResource("saves/saves.data").getPath();
+
+        Path savesFilePath = Paths.get(savesString);
+
+        String savesPath = savesFilePath.getParent().toString();
+
+        String stringPath = String.format("%s/%s_%s.data", savesPath, this.getName().toLowerCase(),
+                this.getConstellation().getDescription().toLowerCase());
+
+        Path path = Paths.get(stringPath);
+
+        try(OutputStream out = new BufferedOutputStream(
+                Files.newOutputStream(path, CREATE, TRUNCATE_EXISTING))) {
+            // Player data
+            String s = this.toString();
+
+            byte data[] = s.getBytes();
+
+            out.write(data, 0, data.length);
+
+        } catch (IOException e) {
+            throw new IllegalStateException("Error creating file.");
+        }
+
+    }
+
+    @Override
+    public Player load() {
+        byte[] data = filesHelper.load(this.getName().toLowerCase()+"_"+this.getConstellation().getDescription().toLowerCase());
+        Player player = new Player(data);
+        return player;
     }
 }

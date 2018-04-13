@@ -11,7 +11,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.READ;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**
  * Created by wilson.franca on 11/04/18.
@@ -46,7 +48,7 @@ public class FilesLoader {
 
     }
 
-    public OutputStream loadSaveFile(Game game) {
+    public OutputStream loadSavedFile(Game game) {
 
         ClassLoader classLoader = getClass().getClassLoader();
 
@@ -72,4 +74,27 @@ public class FilesLoader {
             throw new FileLoadException("File not found!");
         }
     }
+
+    public OutputStream saveFile(String filePath) {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        String savesString = classLoader.getResource("saves/saves.data").getPath();
+
+        Path savesFilePath = Paths.get(savesString);
+
+        String savesPath = savesFilePath.getParent().toString();
+
+        String stringPath = String.format("%s/%s.data", savesPath, filePath);
+
+        Path path = Paths.get(stringPath);
+
+        try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(path, CREATE, TRUNCATE_EXISTING))) {
+            return out;
+        } catch (IOException e) {
+            throw new FileLoadException("Error on saving file", path, e);
+        }
+
+    }
+
 }

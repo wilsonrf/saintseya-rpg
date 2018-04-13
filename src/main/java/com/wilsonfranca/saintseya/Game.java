@@ -54,6 +54,6 @@ public class Game {
     }
 
     public void load() {
-        filesLoader.loadSaveFile(this);
+        filesLoader.loadSavedFile(this);
     }
 }

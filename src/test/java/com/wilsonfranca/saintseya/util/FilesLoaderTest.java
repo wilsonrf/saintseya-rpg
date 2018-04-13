@@ -83,7 +83,7 @@ public class FilesLoaderTest {
 
         when(Files.newOutputStream(any(), any())).thenReturn(new ByteArrayOutputStream());
 
-        OutputStream outputStream = filesLoader.loadSaveFile(game);
+        OutputStream outputStream = filesLoader.loadSavedFile(game);
 
         assertThat(outputStream).isNotNull();
     }
@@ -97,7 +97,7 @@ public class FilesLoaderTest {
 
         when(Files.exists(any(Path.class))).thenReturn(false);
 
-        OutputStream outputStream = filesLoader.loadSaveFile(game);
+        OutputStream outputStream = filesLoader.loadSavedFile(game);
 
     }
 
@@ -112,6 +112,6 @@ public class FilesLoaderTest {
 
         when(Files.newOutputStream(any(), any())).thenThrow(IOException.class);
 
-        OutputStream outputStream = filesLoader.loadSaveFile(game);
+        OutputStream outputStream = filesLoader.loadSavedFile(game);
     }
 }

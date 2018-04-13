@@ -34,4 +34,13 @@ public enum Constellation {
     public int getId() {
         return id;
     }
+
+    public static Constellation getByName(String name) {
+        for (Constellation constellation: values()) {
+            if(constellation.description.equalsIgnoreCase(name)) {
+                return constellation;
+            }
+        }
+        throw new IllegalArgumentException("Constalation not valid");
+    }
 }
