@@ -1,13 +1,20 @@
 package com.wilsonfranca.saintseya.util;
 
+import com.wilsonfranca.saintseya.Campaign;
+import com.wilsonfranca.saintseya.Game;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +31,11 @@ public class FilesLoaderTest {
 
     FilesLoader filesLoader;
 
-    ClassLoader classLoader;
+    @InjectMocks
+    Game game;
+
+    @Mock
+    Campaign campaign;
 
     @Before
     public void before() {
@@ -59,5 +70,48 @@ public class FilesLoaderTest {
 
         Stream<String> stringStream = filesLoader.loadFileAsStringStream("misc/banner_test_text.txt");
 
+    }
+
+    @Test
+    public void test_load_a_outputstream_of_a_game_save_successful() throws IOException {
+
+        mockStatic(Files.class);
+
+        when(campaign.getId()).thenReturn("player_campaing");
+
+        when(Files.exists(any(Path.class))).thenReturn(true);
+
+        when(Files.newOutputStream(any(), any())).thenReturn(new ByteArrayOutputStream());
+
+        OutputStream outputStream = filesLoader.loadSaveFile(game);
+
+        assertThat(outputStream).isNotNull();
+    }
+
+    @Test(expected = FileLoadException.class)
+    public void test_try_to_load_a_outputstream_of_a_game_which_not_exists_and_got_file_load_exception() {
+
+        mockStatic(Files.class);
+
+        when(campaign.getId()).thenReturn("player_campaing");
+
+        when(Files.exists(any(Path.class))).thenReturn(false);
+
+        OutputStream outputStream = filesLoader.loadSaveFile(game);
+
+    }
+
+    @Test(expected = FileLoadException.class)
+    public void test_try_to_load_a_outputstream_of_a_existing_saved_game_but_got_io_exception_and_return_file_load_exception() throws IOException {
+
+        mockStatic(Files.class);
+
+        when(campaign.getId()).thenReturn("player_campaing");
+
+        when(Files.exists(any(Path.class))).thenReturn(true);
+
+        when(Files.newOutputStream(any(), any())).thenThrow(IOException.class);
+
+        OutputStream outputStream = filesLoader.loadSaveFile(game);
     }
 }

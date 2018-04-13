@@ -15,6 +15,10 @@ public class FileLoadException extends RuntimeException {
         this.path = path;
     }
 
+    public FileLoadException(String message) {
+        super(message);
+    }
+
     public Path getPath() {
         return path;
     }

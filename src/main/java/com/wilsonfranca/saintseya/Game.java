@@ -49,7 +49,11 @@ public class Game {
         return campaign;
     }
 
-    public void load(String player_campaign) {
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
+    }
 
+    public void load() {
+        filesLoader.loadSaveFile(this);
     }
 }
