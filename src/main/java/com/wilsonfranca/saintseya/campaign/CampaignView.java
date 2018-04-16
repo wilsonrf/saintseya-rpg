@@ -82,6 +82,8 @@ public class CampaignView implements Observer {
                 campaignController.execute(player);
             }
 
+        } else {
+            // Create Quest here
         }
     }
 
@@ -134,7 +136,8 @@ public class CampaignView implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         String action = (String) arg;
-        if("newCampaign".equalsIgnoreCase(action)) {
+        if("newCampaign".equalsIgnoreCase(action) ||
+                "newQuest".equalsIgnoreCase(action)) {
             show();
         }
     }

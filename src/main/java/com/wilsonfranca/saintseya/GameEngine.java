@@ -50,6 +50,6 @@ public class GameEngine extends Observable {
         this.player = player;
         //save
         setChanged();
-        notifyObservers("newKnight");
+        notifyObservers("newQuest");
     }
 }
