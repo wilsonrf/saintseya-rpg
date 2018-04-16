@@ -1,6 +1,6 @@
 package com.wilsonfranca.saintseya.util;
 
-import com.wilsonfranca.saintseya.Campaign;
+import com.wilsonfranca.saintseya.campaign.Campaign;
 import com.wilsonfranca.saintseya.Game;
 import org.junit.Before;
 import org.junit.Test;

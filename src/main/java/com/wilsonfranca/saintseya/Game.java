@@ -1,5 +1,6 @@
 package com.wilsonfranca.saintseya;
 
+import com.wilsonfranca.saintseya.campaign.Campaign;
 import com.wilsonfranca.saintseya.util.FilesLoader;
 
 import java.util.Scanner;
@@ -29,7 +30,6 @@ public class Game {
         if(option > 0 && option != 3) {
             if(option == 1) {
                 campaign = new Campaign();
-                campaign.start();
             }
 
             if(option == 2) {

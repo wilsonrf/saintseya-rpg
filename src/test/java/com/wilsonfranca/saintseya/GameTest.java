@@ -1,5 +1,6 @@
 package com.wilsonfranca.saintseya;
 
+import com.wilsonfranca.saintseya.campaign.Campaign;
 import com.wilsonfranca.saintseya.util.FilesLoader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
