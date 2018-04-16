@@ -22,7 +22,7 @@ public class Quest {
 
     private final String id;
 
-    private final Player player;
+    private Player player;
 
     private Instant createdDate;
 
@@ -38,11 +38,17 @@ public class Quest {
 
     Set<QuestPart> parts;
 
+    private QuestPart current;
+
     public Quest(final Player player, String questId) {
         this.id = questId;
         this.player = player;
         this.createdDate = Instant.now();
         this.lastSaveDate = Instant.now();
+    }
+
+    public Quest(String name) {
+        this.id = name;
     }
 
     public String getId() {
@@ -164,5 +170,21 @@ public class Quest {
         sb.append("completed:").append(completed).append(";");
         sb.append("currentPart:").append(currentPart).append(";");
         return sb.toString();
+    }
+
+    public String getCurrentPart() {
+        return currentPart;
+    }
+
+    public void firstPart() {
+        this.currentPart = String.format("%s_part_%s", this.id.toLowerCase(), "1");
+    }
+
+    public void setCurrent(QuestPart current) {
+        this.current = current;
+    }
+
+    public QuestPart getCurrent() {
+        return current;
     }
 }

@@ -1,6 +1,7 @@
 package com.wilsonfranca.saintseya;
 
 import com.wilsonfranca.saintseya.campaign.Campaign;
+import com.wilsonfranca.saintseya.campaign.CampaignService;
 import com.wilsonfranca.saintseya.menu.MenuService;
 
 import java.util.Observable;
@@ -16,7 +17,11 @@ public class GameEngine extends Observable {
 
     private Player player;
 
+    private Quest quest;
+
     protected MenuService menuService;
+
+    protected CampaignService campaignService;
 
 
     public GameEngine() {
@@ -51,5 +56,28 @@ public class GameEngine extends Observable {
         //save
         setChanged();
         notifyObservers("newQuest");
+    }
+
+    public void startQuest(Quest quest) {
+        this.quest = quest;
+        //save
+        while (!player.isDead() && !this.quest.isCompleted()) {
+            if(this.quest.getCurrentPart() == null) {
+                this.quest.firstPart();
+                setChanged();
+                notifyObservers("startQuestPart");
+            }
+        }
+    }
+
+    public Quest getQuest() {
+        return quest;
+    }
+
+    public void startQuestPart(QuestPart questPart) {
+        QuestPart part = campaignService.loadQuestPart(questPart.getId());
+        this.quest.setCurrent(part);
+        setChanged();
+        notifyObservers("startQuestPart");
     }
 }

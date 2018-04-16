@@ -18,9 +18,9 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 /**
  * Created by wilson on 07/04/18.
  */
-class QuestPart implements Comparable <QuestPart> {
+public class QuestPart implements Comparable <QuestPart> {
 
-    private final Quest quest;
+    private Quest quest;
 
     private String id;
 
@@ -55,6 +55,34 @@ class QuestPart implements Comparable <QuestPart> {
                         this.enemy = loadEnemy(enemyId);
                     }
                 });
+    }
+
+    public QuestPart(String... properties){
+        Arrays.asList(properties)
+                .stream()
+                .forEach(property -> {
+                    if(property.contains("id")) {
+                        this.id = property.substring(property.indexOf(":") + 1, property.length());
+                    }
+
+                    if(property.contains("next")) {
+                        this.next = property.substring(property.indexOf(":") + 1, property.length());
+                    }
+
+                    if(property.contains("reward")) {
+                        String rewardId = property.substring(property.indexOf(":") + 1, property.length());
+                        this.reward = loadReward(rewardId);
+                    }
+
+                    if(property.contains("enemy")) {
+                        String enemyId = property.substring(property.indexOf(":") + 1, property.length());
+                        this.enemy = loadEnemy(enemyId);
+                    }
+                });
+    }
+
+    public QuestPart(String currentPart) {
+
     }
 
     public String getId() {
