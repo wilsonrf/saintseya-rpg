@@ -145,9 +145,7 @@ public class Player implements Persistent<Player> {
 
     public void addXp(int xp) {
         if(xp > 0 && experience < 5) {
-            System.out.println(String.format("You got %d experience points!", xp));
             this.experience += xp;
-            System.out.println(String.format("Now you have %d experience points!", this.experience));
         } else {
             this.experience = 0;
             levelUp();
@@ -161,9 +159,7 @@ public class Player implements Persistent<Player> {
 
     public void addHp(int hp) {
         if(hp > 0) {
-            System.out.printf("You got %d health points!", hp);
             this.healthPoints += hp;
-            System.out.printf("Now you have %d experience points!", this.experience);
             try {
                 save();
             } catch (RuntimeException e) {
@@ -295,5 +291,9 @@ public class Player implements Persistent<Player> {
         byte[] data = filesHelper.load(this.getName().toLowerCase()+"_"+this.getConstellation().getDescription().toLowerCase());
         Player player = new Player(data);
         return player;
+    }
+
+    public int getExperience() {
+        return experience;
     }
 }

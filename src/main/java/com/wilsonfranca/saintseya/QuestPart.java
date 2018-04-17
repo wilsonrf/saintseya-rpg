@@ -82,18 +82,18 @@ public class QuestPart implements Comparable <QuestPart> {
     }
 
     public QuestPart(String currentPart) {
-
+        this.id = currentPart;
     }
 
     public String getId() {
         return id;
     }
 
-    private boolean hasReward() {
+    public boolean hasReward() {
         return this.reward != null;
     }
 
-    private boolean hasEnemy() {
+    public boolean hasEnemy() {
         return this.enemy != null;
     }
 
@@ -140,8 +140,8 @@ public class QuestPart implements Comparable <QuestPart> {
 
         if(hasEnemy()) {
             if(!loadedAndCompleted()) {
-                Figth figth = new Figth(player, enemy);
-                figth.start();
+                Fight fight = new Fight(player, enemy);
+                fight.start();
             } else {
                 System.out.println("You already fighted this enemy!");
             }
@@ -292,5 +292,21 @@ public class QuestPart implements Comparable <QuestPart> {
         sb.append("id:").append(id).append(";");
         sb.append("completed:").append(completed).append(";");
         return sb.toString();
+    }
+
+    public String getNext() {
+        return next;
+    }
+
+    public Reward getReward() {
+        return reward;
+    }
+
+    public void complete() {
+        this.completed = true;
+    }
+
+    public Enemy getEnemy() {
+        return enemy;
     }
 }

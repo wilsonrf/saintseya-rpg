@@ -5,7 +5,7 @@ import java.util.Scanner;
 /**
  * Created by wilson on 10/04/18.
  */
-public class Figth {
+public class Fight {
 
     private Player player;
 
@@ -13,7 +13,7 @@ public class Figth {
 
     private boolean ended;
 
-    public Figth(Player player, Enemy enemy) {
+    public Fight(Player player, Enemy enemy) {
         this.player = player;
         this.enemy = enemy;
     }

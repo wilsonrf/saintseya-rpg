@@ -32,7 +32,7 @@ public class Quest {
 
     private boolean completed;
 
-    String currentPart;
+    String currentPartId;
 
     TreeMap<String, TreeMap<String, QuestPart>> questParts = new TreeMap<>();
 
@@ -67,11 +67,11 @@ public class Quest {
         this.started  = true;
         loadQuestBanner();
         while (!player.isDead() && !isCompleted()) {
-            if(currentPart == null) {
-                currentPart = String.format("%s_part_%s", this.id.toLowerCase(), "1");
+            if(currentPartId == null) {
+                currentPartId = String.format("%s_part_%s", this.id.toLowerCase(), "1");
             }
-            QuestPart questPart = loadPart(currentPart);
-            currentPart = questPart.start(player);
+            QuestPart questPart = loadPart(currentPartId);
+            currentPartId = questPart.start(player);
             try {
                 save();
             } catch (RuntimeException e) {
@@ -168,23 +168,23 @@ public class Quest {
         sb.append("lastSaveDate:").append(lastSaveDate.toEpochMilli()).append(";");
         sb.append("started:").append(started).append(";");
         sb.append("completed:").append(completed).append(";");
-        sb.append("currentPart:").append(currentPart).append(";");
+        sb.append("currentPartId:").append(currentPartId).append(";");
         return sb.toString();
     }
 
-    public String getCurrentPart() {
-        return currentPart;
-    }
 
-    public void firstPart() {
-        this.currentPart = String.format("%s_part_%s", this.id.toLowerCase(), "1");
+    public QuestPart getCurrent() {
+        if(current == null) {
+            current = new QuestPart(String.format("%s_part_%s", this.id.toLowerCase(), "1"));
+        }
+        return current;
     }
 
     public void setCurrent(QuestPart current) {
         this.current = current;
     }
 
-    public QuestPart getCurrent() {
-        return current;
+    public String getNext(String nextId) {
+        return this.getCurrent().getId()+"_"+nextId;
     }
 }

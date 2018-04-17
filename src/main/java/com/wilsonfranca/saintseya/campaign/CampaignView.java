@@ -80,17 +80,6 @@ public class CampaignView implements Observer {
                 campaignController.execute(player);
             }
 
-        } else if (this.gameEngine.getPlayer() != null && this.gameEngine.getQuest() == null) {
-            // Create Quest here
-            Quest quest = new Quest("fenix_quest");
-            questBanner();
-            campaignController.execute(quest);
-        } else if (this.gameEngine.getPlayer() != null
-                && this.gameEngine.getQuest() != null
-                && this.gameEngine.getQuest().getCurrentPart() != null) {
-            QuestPart questPart = new QuestPart(this.gameEngine.getQuest().getCurrentPart());
-            questPartBanner(questPart);
-            campaignController.execute(questPart);
         }
     }
 
@@ -129,25 +118,6 @@ public class CampaignView implements Observer {
 
         } catch (IOException e) {
             throw new IllegalStateException("There is a problem loading the menu options file");
-        }
-    }
-
-    private void questBanner() {
-
-        ClassLoader classLoader = getClass().getClassLoader();
-
-        String path = classLoader.getResource(String.format("quest/%s_banner.txt",
-                this.gameEngine.getQuest().getId().toLowerCase())).getPath();
-
-        try (Stream<String> stringStream = Files.lines(Paths.get(path))) {
-
-            String banner = stringStream
-                    .filter(s -> !"".equals(s) && s != null)
-                    .collect(Collectors.joining("\n"));
-            System.out.println(banner);
-
-        } catch (IOException e) {
-            throw new IllegalStateException("There is a problem loading the quest banner file");
         }
     }
 
