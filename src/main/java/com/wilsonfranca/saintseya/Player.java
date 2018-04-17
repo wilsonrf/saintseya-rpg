@@ -37,6 +37,8 @@ public class Player implements Persistent<Player> {
 
     private int recoveryHpPoints;
 
+    private boolean hitted;
+
     FilesHelper filesHelper;
 
     public Player(String name, Constellation constellation) {
@@ -202,17 +204,15 @@ public class Player implements Persistent<Player> {
         int playerDice = random.ints(1, 6).findFirst().getAsInt();
         int enemyDice = random.ints(1, 6).findFirst().getAsInt();
         if(playerDice > enemyDice) {
-            System.out.println(String.format("You hit %s!", enemy.getName()));
             enemy.hit(this.hitPoints);
-            System.out.println(String.format("%s Health Points: %d", this.getName(), this.getHealthPoints()));
-            System.out.println(String.format("%s Health Points: %d", enemy.getName(), enemy.getHealthPoints()));
+            enemy.hitted();
 
         } else {
-            System.out.println("You didn't hit the enemy!");
+            enemy.notHitted();
         }
     }
 
-    public boolean runAway(Enemy enemy) {
+    public boolean runAway() {
 
         boolean runWay = false;
 
@@ -221,11 +221,7 @@ public class Player implements Persistent<Player> {
         int enemyDice = random.ints(1, 6).findFirst().getAsInt();
         if(playerDice > enemyDice) {
             runWay = true;
-            System.out.println("You ran way!");
-        } else {
-            System.out.println("You didn't ran way!");
         }
-
         return runWay;
 
     }
@@ -295,5 +291,17 @@ public class Player implements Persistent<Player> {
 
     public int getExperience() {
         return experience;
+    }
+
+    public void hitted() {
+        this.hitted = true;
+    }
+
+    public void notHitted() {
+        this.hitted = false;
+    }
+
+    public boolean isHitted() {
+        return hitted;
     }
 }

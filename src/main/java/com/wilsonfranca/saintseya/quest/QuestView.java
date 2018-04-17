@@ -1,8 +1,6 @@
 package com.wilsonfranca.saintseya.quest;
 
-import com.wilsonfranca.saintseya.GameEngine;
-import com.wilsonfranca.saintseya.Quest;
-import com.wilsonfranca.saintseya.QuestPart;
+import com.wilsonfranca.saintseya.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -64,6 +62,48 @@ public class QuestView implements Observer {
         questController.execute(nextId);
     }
 
+    private void showBattle() {
+        Battle battle = this.gameEngine.getQuest().getCurrent().getBattle();
+        Player player = this.gameEngine.getPlayer();
+        Enemy enemy = this.gameEngine.getQuest().getCurrent().getEnemy();
+        if (!battle.isEnded() && (!player.isDead() && !enemy.isDead())) {
+            if (player.isHitted()) {
+                System.out.println(String.format("%s hit You!", enemy.getName()));
+            }
+
+            if (enemy.isHitted()) {
+                System.out.println(String.format("You hit %s!", enemy.getName()));
+
+            }
+
+            System.out.println(String.format("%s Health Points: %d", player.getName(), player.getHealthPoints()));
+            System.out.println(String.format("%s Health Points: %d", enemy.getName(), enemy.getHealthPoints()));
+
+            partBanner(this.gameEngine.getQuest().getCurrent());
+            String option = null;
+            while (option == null || (!"1".equals(option) && !"2".equals(option))) {
+                System.out.println(String.format("::::::%s of %s what you want to do?::::::", player.getName(),
+                        player.getConstellation().getDescription()));
+                System.out.println("1) Attack");
+                System.out.println("2) Run away");
+                option = scanner.nextLine();
+            }
+            questController.execute(enemy, option);
+        } else {
+            show();
+        }
+    }
+
+    private void showDidntRunAway() {
+        System.out.println("You didn't ran away");
+        showBattle();
+    }
+
+    private void showRunAway() {
+        System.out.println("You ran away!");
+        show();
+    }
+
     private void questBanner(Quest quest) {
 
         ClassLoader classLoader = getClass().getClassLoader();
@@ -108,11 +148,15 @@ public class QuestView implements Observer {
         String action = (String) arg;
         if("rewardedQuest".equalsIgnoreCase(action)) {
             showRewarded();
-        } else if("rewardedQuest".equalsIgnoreCase(action)) {
-
+        } else if("battle".equalsIgnoreCase(action)) {
+            showBattle();
         } else if("startQuest".equalsIgnoreCase(action) ||
                 "startQuestPart".equalsIgnoreCase(action)) {
             show();
+        } else if("ranAway".equalsIgnoreCase(action)) {
+            showRunAway();
+        } else if("didntRanWay".equalsIgnoreCase(action)) {
+            showDidntRunAway();
         }
     }
 

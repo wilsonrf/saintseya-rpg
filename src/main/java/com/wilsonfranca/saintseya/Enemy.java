@@ -16,7 +16,9 @@ public class Enemy {
 
     private int hitPoints;
 
-   public Enemy(String... properties) {
+    private boolean hitted;
+
+    public Enemy(String... properties) {
        Arrays.asList(properties)
                .stream()
                .forEach(property -> {
@@ -64,13 +66,23 @@ public class Enemy {
         int playerDice = random.ints(1, 6).findFirst().getAsInt();
         int enemyDice = random.ints(1, 6).findFirst().getAsInt();
         if(enemyDice > playerDice) {
-            System.out.println(String.format("%s hit You!", this.getName()));
             player.hit(this.hitPoints);
-            System.out.println(String.format("%s Health Points: %d", player.getName(), player.getHealthPoints()));
-            System.out.println(String.format("%s Health Points: %d", this.getName(), this.getHealthPoints()));
+            player.hitted();
 
         } else {
-            System.out.println(System.out.format("%s didn't hit You!", this.getName()));
+            player.notHitted();
         }
+    }
+
+    public void hitted() {
+        this.hitted = true;
+    }
+
+    public void notHitted() {
+        this.hitted = false;
+    }
+
+    public boolean isHitted() {
+        return hitted;
     }
 }

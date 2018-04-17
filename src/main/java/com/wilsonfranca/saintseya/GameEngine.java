@@ -89,13 +89,46 @@ public class GameEngine extends Observable {
             notifyObservers("rewardedQuest");
         } else if (part.hasEnemy()) {
             if (!questService.isPartloadedAndCompleted(player, part)) {
-                Fight fight = new Fight(player, part.getEnemy());
-                //contiue fight logic
+                Battle battle = new Battle(player, part.getEnemy());
+                this.quest.getCurrent().setBattle(battle);
+                setChanged();
+                notifyObservers("battle");
             }
 
         } else {
             setChanged();
             notifyObservers("startQuestPart");
+        }
+    }
+
+    public void attack(Enemy enemy) {
+        player.attack(enemy);
+        if(enemy.isDead()) {
+            player.won();
+            setChanged();
+            notifyObservers("enemyDead");
+        } else {
+            enemy.attack(this.getPlayer());
+        }
+        if(player.isDead()) {
+            setChanged();
+            notifyObservers("playerDead");
+        } else {
+            setChanged();
+            notifyObservers("battle");
+        }
+
+    }
+
+    public void runAway() {
+        boolean run = player.runAway();
+        if(run) {
+            quest.getCurrent().getBattle().end();
+            setChanged();
+            notifyObservers("ranAway");
+        } else {
+            setChanged();
+            notifyObservers("didntRanWay");
         }
     }
 }

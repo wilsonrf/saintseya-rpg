@@ -32,6 +32,8 @@ public class QuestPart implements Comparable <QuestPart> {
 
     private Enemy enemy;
 
+    private Battle battle;
+
     public QuestPart(Quest quest, String... properties){
         this.quest = quest;
         Arrays.asList(properties)
@@ -140,8 +142,8 @@ public class QuestPart implements Comparable <QuestPart> {
 
         if(hasEnemy()) {
             if(!loadedAndCompleted()) {
-                Fight fight = new Fight(player, enemy);
-                fight.start();
+                Battle battle = new Battle(player, enemy);
+                battle.start();
             } else {
                 System.out.println("You already fighted this enemy!");
             }
@@ -308,5 +310,13 @@ public class QuestPart implements Comparable <QuestPart> {
 
     public Enemy getEnemy() {
         return enemy;
+    }
+
+    public void setBattle(Battle battle) {
+        this.battle = battle;
+    }
+
+    public Battle getBattle() {
+        return battle;
     }
 }

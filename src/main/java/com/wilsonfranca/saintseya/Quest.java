@@ -39,6 +39,7 @@ public class Quest {
     Set<QuestPart> parts;
 
     private QuestPart current;
+    private Battle battle;
 
     public Quest(final Player player, String questId) {
         this.id = questId;
@@ -187,4 +188,5 @@ public class Quest {
     public String getNext(String nextId) {
         return this.getCurrent().getId()+"_"+nextId;
     }
+
 }

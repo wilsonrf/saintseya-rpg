@@ -5,7 +5,7 @@ import java.util.Scanner;
 /**
  * Created by wilson on 10/04/18.
  */
-public class Fight {
+public class Battle {
 
     private Player player;
 
@@ -13,7 +13,7 @@ public class Fight {
 
     private boolean ended;
 
-    public Fight(Player player, Enemy enemy) {
+    public Battle(Player player, Enemy enemy) {
         this.player = player;
         this.enemy = enemy;
     }
@@ -49,7 +49,15 @@ public class Fight {
         if("1".equals(option)) {
             player.attack(enemy);
         } else if("2".equals(option)) {
-            ended = player.runAway(enemy);
+            ended = player.runAway();
         }
+    }
+
+    public boolean isEnded() {
+        return ended;
+    }
+
+    public void end() {
+        this.ended = true;
     }
 }
