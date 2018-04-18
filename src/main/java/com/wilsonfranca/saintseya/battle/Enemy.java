@@ -1,4 +1,6 @@
-package com.wilsonfranca.saintseya;
+package com.wilsonfranca.saintseya.battle;
+
+import com.wilsonfranca.saintseya.player.Player;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -67,10 +69,10 @@ public class Enemy {
         int enemyDice = random.ints(1, 6).findFirst().getAsInt();
         if(enemyDice > playerDice) {
             player.hit(this.hitPoints);
-            player.hitted();
+            player.damage();
 
         } else {
-            player.notHitted();
+            player.notDamage();
         }
     }
 

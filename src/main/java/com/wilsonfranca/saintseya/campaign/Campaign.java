@@ -1,16 +1,11 @@
 package com.wilsonfranca.saintseya.campaign;
 
-import com.wilsonfranca.saintseya.Player;
-import com.wilsonfranca.saintseya.Quest;
 import com.wilsonfranca.saintseya.util.FilesHelper;
 import com.wilsonfranca.saintseya.util.Persistent;
 
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 /**
@@ -20,10 +15,6 @@ public class Campaign implements Persistent<Campaign> {
 
     private String id;
 
-    private Player player;
-
-    private Set<Quest> quests;
-
     private Instant dateCreated;
 
     private Instant savedDate;
@@ -31,13 +22,6 @@ public class Campaign implements Persistent<Campaign> {
     public Campaign(){
         this.dateCreated = Instant.now();
         this.savedDate = this.dateCreated;
-        this.quests = new HashSet<>();
-    }
-
-    public Campaign(final Player player, final Quest... quests) {
-        this();
-        this.player = player;
-        this.quests = Arrays.asList(quests).stream().collect(Collectors.toSet());
     }
 
     private Campaign(String... properties) {
@@ -64,10 +48,6 @@ public class Campaign implements Persistent<Campaign> {
         return id;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
     public Instant getDateCreated() {
         return dateCreated;
     }
@@ -76,16 +56,10 @@ public class Campaign implements Persistent<Campaign> {
         return savedDate;
     }
 
-    public Set<Quest> getQuests() {
-        return quests;
-    }
-
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("id:").append(this.id).append(";")
-                .append("player:").append(this.player.getName()).append(";");
+        sb.append("id:").append(this.id).append(";");
         return sb.toString();
     }
 
@@ -101,16 +75,9 @@ public class Campaign implements Persistent<Campaign> {
 
     @Override
     public void save() {
-        // only save if it has a quest
-        if(quests != null && !quests.isEmpty()) {
-            this.savedDate = Instant.now();
-            this.id = this.getPlayer().getName().toLowerCase() + "_campaign";
-            FilesHelper filesHelper = new FilesHelper();
-            filesHelper.save(this);
-        } else {
-            throw new IllegalStateException("Problem saving a Campaign without a quest");
-        }
-
+        FilesHelper filesHelper = new FilesHelper();
+        filesHelper.save(this);
+        //TODO save
     }
 
     @Override

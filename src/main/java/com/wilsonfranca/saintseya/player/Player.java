@@ -1,5 +1,6 @@
-package com.wilsonfranca.saintseya;
+package com.wilsonfranca.saintseya.player;
 
+import com.wilsonfranca.saintseya.battle.Enemy;
 import com.wilsonfranca.saintseya.util.FilesHelper;
 import com.wilsonfranca.saintseya.util.Persistent;
 
@@ -37,7 +38,7 @@ public class Player implements Persistent<Player> {
 
     private int recoveryHpPoints;
 
-    private boolean hitted;
+    private boolean damaged;
 
     FilesHelper filesHelper;
 
@@ -101,6 +102,14 @@ public class Player implements Persistent<Player> {
 
     public int getHealthPoints() {
         return healthPoints;
+    }
+
+    public int getExperience() {
+        return experience;
+    }
+
+    public boolean isDamaged() {
+        return damaged;
     }
 
     public void setFilesHelper(FilesHelper filesHelper) {
@@ -213,9 +222,7 @@ public class Player implements Persistent<Player> {
     }
 
     public boolean runAway() {
-
         boolean runWay = false;
-
         Random random = new Random();
         int playerDice = random.ints(1, 6).findFirst().getAsInt();
         int enemyDice = random.ints(1, 6).findFirst().getAsInt();
@@ -233,6 +240,14 @@ public class Player implements Persistent<Player> {
 
     public void hit(int hitPoints) {
         this.healthPoints -= hitPoints;
+    }
+
+    public void damage() {
+        this.damaged = true;
+    }
+
+    public void notDamage() {
+        this.damaged = false;
     }
 
     @Override
@@ -287,21 +302,5 @@ public class Player implements Persistent<Player> {
         byte[] data = filesHelper.load(this.getName().toLowerCase()+"_"+this.getConstellation().getDescription().toLowerCase());
         Player player = new Player(data);
         return player;
-    }
-
-    public int getExperience() {
-        return experience;
-    }
-
-    public void hitted() {
-        this.hitted = true;
-    }
-
-    public void notHitted() {
-        this.hitted = false;
-    }
-
-    public boolean isHitted() {
-        return hitted;
     }
 }

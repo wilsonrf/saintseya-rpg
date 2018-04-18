@@ -1,4 +1,4 @@
-package com.wilsonfranca.saintseya;
+package com.wilsonfranca.saintseya.battle;
 
 import java.util.Arrays;
 

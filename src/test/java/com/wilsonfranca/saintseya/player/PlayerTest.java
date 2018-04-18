@@ -1,4 +1,4 @@
-package com.wilsonfranca.saintseya;
+package com.wilsonfranca.saintseya.player;
 
 import com.wilsonfranca.saintseya.util.FilesHelper;
 import org.junit.Before;

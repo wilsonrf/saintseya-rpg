@@ -1,7 +1,6 @@
 package com.wilsonfranca.saintseya.quest;
 
-import com.wilsonfranca.saintseya.Player;
-import com.wilsonfranca.saintseya.QuestPart;
+import com.wilsonfranca.saintseya.player.Player;
 
 import java.io.IOException;
 import java.nio.file.Files;

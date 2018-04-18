@@ -1,6 +1,9 @@
 package com.wilsonfranca.saintseya.quest;
 
 import com.wilsonfranca.saintseya.*;
+import com.wilsonfranca.saintseya.battle.Battle;
+import com.wilsonfranca.saintseya.battle.Enemy;
+import com.wilsonfranca.saintseya.player.Player;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,13 +37,13 @@ public class QuestView implements Observer {
             Quest quest = new Quest("fenix_quest");
             questBanner(quest);
             questController.execute(quest);
-        } else if (this.gameEngine.getQuest().getCurrent() != null) {
-            partBanner(this.gameEngine.getQuest().getCurrent());
+        } else if (this.gameEngine.getQuest().getQuestPart() != null) {
             String nextId;
-            if (this.gameEngine.getQuest().getCurrent().getNext() == null) {
+            if (this.gameEngine.getQuest().getQuestPart().getNext() == null) {
+                partBanner(this.gameEngine.getQuest().getQuestPart());
                 nextId = this.gameEngine.getQuest().getNext(scanner.nextLine());
             } else {
-                nextId = this.gameEngine.getQuest().getCurrent().getNext();
+                nextId = this.gameEngine.getQuest().getQuestPart().getNext();
             }
             questController.execute(nextId);
         }
@@ -49,25 +52,27 @@ public class QuestView implements Observer {
 
     private void showRewarded() {
 
+        partBanner(this.gameEngine.getQuest().getQuestPart());
+
         System.out.println("You got some experience and health points!");
         System.out.println(String.format("Now you have %d experience and %d health poitns!",
                 this.gameEngine.getPlayer().getExperience(), this.gameEngine.getPlayer().getHealthPoints()));
-        partBanner(this.gameEngine.getQuest().getCurrent());
         String nextId;
-        if (this.gameEngine.getQuest().getCurrent().getNext() == null) {
+        if (this.gameEngine.getQuest().getQuestPart().getNext() == null) {
             nextId = this.gameEngine.getQuest().getNext(scanner.nextLine());
         } else {
-            nextId = this.gameEngine.getQuest().getCurrent().getNext();
+            nextId = this.gameEngine.getQuest().getQuestPart().getNext();
         }
         questController.execute(nextId);
     }
 
     private void showBattle() {
-        Battle battle = this.gameEngine.getQuest().getCurrent().getBattle();
+        Battle battle = this.gameEngine.getQuest().getQuestPart().getBattle();
         Player player = this.gameEngine.getPlayer();
-        Enemy enemy = this.gameEngine.getQuest().getCurrent().getEnemy();
+        Enemy enemy = this.gameEngine.getQuest().getQuestPart().getEnemy();
         if (!battle.isEnded() && (!player.isDead() && !enemy.isDead())) {
-            if (player.isHitted()) {
+            partBanner(this.gameEngine.getQuest().getQuestPart());
+            if (player.isDamaged()) {
                 System.out.println(String.format("%s hit You!", enemy.getName()));
             }
 
@@ -79,7 +84,6 @@ public class QuestView implements Observer {
             System.out.println(String.format("%s Health Points: %d", player.getName(), player.getHealthPoints()));
             System.out.println(String.format("%s Health Points: %d", enemy.getName(), enemy.getHealthPoints()));
 
-            partBanner(this.gameEngine.getQuest().getCurrent());
             String option = null;
             while (option == null || (!"1".equals(option) && !"2".equals(option))) {
                 System.out.println(String.format("::::::%s of %s what you want to do?::::::", player.getName(),

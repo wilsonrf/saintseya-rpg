@@ -1,4 +1,6 @@
-package com.wilsonfranca.saintseya;
+package com.wilsonfranca.saintseya.battle;
+
+import com.wilsonfranca.saintseya.player.Player;
 
 import java.util.Scanner;
 

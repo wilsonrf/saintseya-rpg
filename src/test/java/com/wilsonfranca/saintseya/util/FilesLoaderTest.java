@@ -1,11 +1,9 @@
 package com.wilsonfranca.saintseya.util;
 
 import com.wilsonfranca.saintseya.campaign.Campaign;
-import com.wilsonfranca.saintseya.Game;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -30,9 +28,6 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 public class FilesLoaderTest {
 
     FilesLoader filesLoader;
-
-    @InjectMocks
-    Game game;
 
     @Mock
     Campaign campaign;
@@ -83,7 +78,7 @@ public class FilesLoaderTest {
 
         when(Files.newOutputStream(any(), any())).thenReturn(new ByteArrayOutputStream());
 
-        OutputStream outputStream = filesLoader.loadSavedFile(game);
+        OutputStream outputStream = filesLoader.loadSavedFile(campaign);
 
         assertThat(outputStream).isNotNull();
     }
@@ -97,7 +92,7 @@ public class FilesLoaderTest {
 
         when(Files.exists(any(Path.class))).thenReturn(false);
 
-        OutputStream outputStream = filesLoader.loadSavedFile(game);
+        OutputStream outputStream = filesLoader.loadSavedFile(campaign);
 
     }
 
@@ -112,6 +107,6 @@ public class FilesLoaderTest {
 
         when(Files.newOutputStream(any(), any())).thenThrow(IOException.class);
 
-        OutputStream outputStream = filesLoader.loadSavedFile(game);
+        OutputStream outputStream = filesLoader.loadSavedFile(campaign);
     }
 }

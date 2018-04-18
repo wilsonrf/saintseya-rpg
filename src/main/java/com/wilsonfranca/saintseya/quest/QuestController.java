@@ -1,8 +1,7 @@
 package com.wilsonfranca.saintseya.quest;
 
-import com.wilsonfranca.saintseya.Enemy;
+import com.wilsonfranca.saintseya.battle.Enemy;
 import com.wilsonfranca.saintseya.GameEngine;
-import com.wilsonfranca.saintseya.Quest;
 
 /**
  * Created by wilson on 16/04/18.

@@ -1,6 +1,5 @@
 package com.wilsonfranca.saintseya.menu;
 
-import com.wilsonfranca.saintseya.MenuOption;
 import com.wilsonfranca.saintseya.util.FileLoadException;
 import com.wilsonfranca.saintseya.util.FilesLoader;
 

@@ -1,8 +1,13 @@
 package com.wilsonfranca.saintseya;
 
+import com.wilsonfranca.saintseya.battle.Battle;
+import com.wilsonfranca.saintseya.battle.Enemy;
 import com.wilsonfranca.saintseya.campaign.Campaign;
 import com.wilsonfranca.saintseya.campaign.CampaignService;
+import com.wilsonfranca.saintseya.player.Player;
 import com.wilsonfranca.saintseya.menu.MenuService;
+import com.wilsonfranca.saintseya.quest.Quest;
+import com.wilsonfranca.saintseya.quest.QuestPart;
 import com.wilsonfranca.saintseya.quest.QuestService;
 
 import java.util.Observable;
@@ -32,6 +37,16 @@ public class GameEngine extends Observable {
         this.questService = new QuestService();
     }
 
+    public Campaign getCampaign() { return campaign; }
+
+    public Quest getQuest() {
+        return quest;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
     public String menu() {
         return Stream.of(menuService.banner(), menuService.options())
                 .collect(Collectors.joining("\n"));
@@ -51,13 +66,9 @@ public class GameEngine extends Observable {
 
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
     public void createKnight(Player player) {
         this.player = player;
-        //save
+        player.save();
         setChanged();
         notifyObservers("startQuest");
     }
@@ -65,20 +76,15 @@ public class GameEngine extends Observable {
     public void startQuest(Quest quest) {
         this.quest = quest;
         //save
-        QuestPart part = questService.questPart(this.quest.getId(), this.quest.getCurrent().getId());
-        this.getQuest().setCurrent(part);
+        QuestPart part = questService.questPart(this.quest.getId(), this.quest.getQuestPart().getId());
+        this.getQuest().setQuestPart(part);
         setChanged();
         notifyObservers("startQuestPart");
     }
 
-    public Quest getQuest() {
-        return quest;
-    }
-
-
     public void startQuestPart(String partId) {
         QuestPart part = questService.questPart(this.quest.getId(), partId);
-        this.getQuest().setCurrent(part);
+        this.getQuest().setQuestPart(part);
         if (part.hasReward()) {
             if (!questService.isPartloadedAndCompleted(player, part)) {
                 player.addXp(part.getReward().getXp());
@@ -90,7 +96,7 @@ public class GameEngine extends Observable {
         } else if (part.hasEnemy()) {
             if (!questService.isPartloadedAndCompleted(player, part)) {
                 Battle battle = new Battle(player, part.getEnemy());
-                this.quest.getCurrent().setBattle(battle);
+                this.quest.getQuestPart().setBattle(battle);
                 setChanged();
                 notifyObservers("battle");
             }
@@ -123,7 +129,7 @@ public class GameEngine extends Observable {
     public void runAway() {
         boolean run = player.runAway();
         if(run) {
-            quest.getCurrent().getBattle().end();
+            quest.getQuestPart().getBattle().end();
             setChanged();
             notifyObservers("ranAway");
         } else {

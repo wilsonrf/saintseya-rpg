@@ -21,6 +21,5 @@ public class SaintSeyaGameApplication {
         QuestController questController = new QuestController(gameEngine);
         QuestView questView = new QuestView(questController, gameEngine);
         menuView.show();
-
     }
 }

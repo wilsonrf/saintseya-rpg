@@ -1,6 +1,8 @@
 package com.wilsonfranca.saintseya.campaign;
 
 import com.wilsonfranca.saintseya.*;
+import com.wilsonfranca.saintseya.player.Constellation;
+import com.wilsonfranca.saintseya.player.Player;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -67,7 +69,7 @@ public class CampaignView implements Observer {
             if (player.exists()) {
                 String overwrite;
                 do {
-                    System.out.printf("The player %s of %s already exists!", name, constellation.getDescription());
+                    System.out.println(String.format("The player %s of %s already exists!", name, constellation.getDescription()));
                     System.out.println("[O]verwrite | [R]estart");
                     overwrite = scanner.nextLine();
                 } while (overwrite == null || (!"R".equalsIgnoreCase(overwrite) && !"O".equalsIgnoreCase(overwrite)));
@@ -83,7 +85,7 @@ public class CampaignView implements Observer {
         }
     }
 
-    public void newPlayerBanner() {
+    protected void newPlayerBanner() {
 
         ClassLoader classLoader = getClass().getClassLoader();
 
@@ -102,7 +104,7 @@ public class CampaignView implements Observer {
 
     }
 
-    private void constellationBanner(Constellation constellation) {
+    protected void constellationBanner(Constellation constellation) {
 
         ClassLoader classLoader = getClass().getClassLoader();
 

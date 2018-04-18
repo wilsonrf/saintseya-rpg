@@ -1,6 +1,6 @@
 package com.wilsonfranca.saintseya.util;
 
-import com.wilsonfranca.saintseya.Game;
+import com.wilsonfranca.saintseya.campaign.Campaign;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class FilesLoader {
 
     }
 
-    public OutputStream loadSavedFile(Game game) {
+    public OutputStream loadSavedFile(Campaign campaign) {
 
         ClassLoader classLoader = getClass().getClassLoader();
 
@@ -58,7 +58,7 @@ public class FilesLoader {
 
         String savesPath = savesFilePath.getParent().toString();
 
-        String stringPath = String.format("%s/%s.data", savesPath, game.getCampaign().getId());
+        String stringPath = String.format("%s/%s.data", savesPath, campaign.getId());
 
         Path path = Paths.get(stringPath);
 
