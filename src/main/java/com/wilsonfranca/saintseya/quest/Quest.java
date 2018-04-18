@@ -1,20 +1,16 @@
 package com.wilsonfranca.saintseya.quest;
 
-import com.wilsonfranca.saintseya.battle.Battle;
+import com.wilsonfranca.saintseya.util.Persistent;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Arrays;
 
 /**
  * Created by wilson on 07/04/18.
  */
-public class Quest {
+public class Quest implements Persistent<Quest> {
 
-    private final String id;
+    private String id;
 
     private Instant createdDate;
 
@@ -26,10 +22,52 @@ public class Quest {
 
     private QuestPart questPart;
 
-    private Battle battle;
-
     public Quest(String name) {
         this.id = name;
+        this.createdDate = Instant.now();
+        this.lastSaveDate = Instant.now();
+        this.started = false;
+        this.completed = false;
+    }
+
+    public Quest(String... properties) {
+        Arrays.asList(properties)
+                .stream()
+                .map(s -> s.split(";"))
+                .flatMap(Arrays::stream)
+                .forEach(property -> {
+
+                    if(property.contains("id")) {
+                        this.id = property.substring(property.indexOf(":") + 1, property.length());
+                    }
+
+                    if(property.contains("createdDate")) {
+                        long millis = Long.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                        this.createdDate = Instant.ofEpochMilli(millis);
+                    }
+
+                    if(property.contains("lastSaveDate")) {
+                        long millis = Long.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                        this.lastSaveDate = Instant.ofEpochMilli(millis);
+                    }
+
+                    if(property.contains("started")) {
+                        this.started = Boolean.getBoolean(property.substring(property.indexOf(":") + 1, property.length()));
+                    }
+
+                    if(property.contains("completed")) {
+                        this.completed = Boolean.getBoolean(property.substring(property.indexOf(":") + 1, property.length()));
+                    }
+
+                    if(property.contains("currentPartId")) {
+                        this.questPart = new QuestPart(property.substring(property.indexOf(":") + 1, property.length()));
+                    }
+
+                });
+    }
+
+    public Quest(byte[] data) {
+        this(new String[] { new String(data) });
     }
 
     public String getId() {
@@ -59,49 +97,6 @@ public class Quest {
         return this.getQuestPart().getId()+"_"+nextId;
     }
 
-    private QuestPart loadPart(String id) {
-
-        ClassLoader classLoader = getClass().getClassLoader();
-
-        String path = classLoader.getResource(String.format("data/%s_part.data",
-                this.id.toLowerCase())).getPath();
-
-        try (Stream<String> stringStream = Files.lines(Paths.get(path))) {
-
-            return stringStream
-                    .filter(s -> !"".equals(s) && s != null)
-                    .map(line -> line.split(";"))
-                    .map(strings -> new QuestPart(this, strings))
-                    .filter(questPart -> {
-                        return questPart.getId().equals(id);
-                    })
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException(id));
-        } catch (IOException e) {
-            throw new IllegalStateException("There is a problem loading the quest banner file");
-        }
-    }
-
-    private void loadQuestBanner() {
-
-        ClassLoader classLoader = getClass().getClassLoader();
-
-        String path = classLoader.getResource(String.format("quest/%s_banner.txt",
-                this.id.toLowerCase())).getPath();
-
-        try (Stream<String> stringStream = Files.lines(Paths.get(path))) {
-
-            String banner = stringStream
-                    .filter(s -> !"".equals(s) && s != null)
-                    .collect(Collectors.joining("\n"));
-            System.out.println(banner);
-
-        } catch (IOException e) {
-            throw new IllegalStateException("There is a problem loading the quest banner file");
-        }
-    }
-
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -110,8 +105,15 @@ public class Quest {
         sb.append("lastSaveDate:").append(lastSaveDate.toEpochMilli()).append(";");
         sb.append("started:").append(started).append(";");
         sb.append("completed:").append(completed).append(";");
-//        sb.append("currentPartId:").append(currentPartId).append(";");
+        if (questPart != null) {
+            sb.append("currentPartId:").append(questPart.getId()).append(";");
+        }
         return sb.toString();
+    }
+
+    @Override
+    public byte[] getPersistentData() {
+        return toString().getBytes();
     }
 
 }

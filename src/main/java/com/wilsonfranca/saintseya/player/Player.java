@@ -1,12 +1,10 @@
 package com.wilsonfranca.saintseya.player;
 
-import com.wilsonfranca.saintseya.battle.Enemy;
+import com.wilsonfranca.saintseya.quest.Enemy;
 import com.wilsonfranca.saintseya.util.FilesHelper;
 import com.wilsonfranca.saintseya.util.Persistent;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,13 +12,12 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-
 /**
  * Created by wilson.franca on 06/04/18.
  */
 public class Player implements Persistent<Player> {
+
+    public static final int XP_POINTS_TO_LEVEL_UP = 5;
 
     private String name;
 
@@ -40,6 +37,8 @@ public class Player implements Persistent<Player> {
 
     private boolean damaged;
 
+    private boolean leveledUp;
+
     FilesHelper filesHelper;
 
     public Player(String name, Constellation constellation) {
@@ -49,7 +48,7 @@ public class Player implements Persistent<Player> {
         loadConstellationData();
     }
 
-    public Player(String... properties) {
+    protected Player(String... properties) {
         Arrays.asList(properties)
                 .stream()
                 .map(s -> s.split(" "))
@@ -88,7 +87,7 @@ public class Player implements Persistent<Player> {
                 });
     }
 
-    public Player(byte[] data) {
+    protected Player(byte[] data) {
         this(new String(data));
     }
 
@@ -110,6 +109,14 @@ public class Player implements Persistent<Player> {
 
     public boolean isDamaged() {
         return damaged;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public boolean isLeveledUp() {
+        return leveledUp;
     }
 
     public void setFilesHelper(FilesHelper filesHelper) {
@@ -155,39 +162,24 @@ public class Player implements Persistent<Player> {
     }
 
     public void addXp(int xp) {
-        if(xp > 0 && experience < 5) {
+        if(xp > 0 && experience < XP_POINTS_TO_LEVEL_UP) {
             this.experience += xp;
+            this.leveledUp = false;
         } else {
             this.experience = 0;
+            this.leveledUp = true;
             levelUp();
-        }
-        try {
-            save();
-        } catch (RuntimeException e) {
-            System.err.println("Error on save the player!");
         }
     }
 
     public void addHp(int hp) {
         if(hp > 0) {
             this.healthPoints += hp;
-            try {
-                save();
-            } catch (RuntimeException e) {
-                System.err.println("Error on save the player!");
-            }
         }
     }
 
     private void levelUp() {
         this.level++;
-        System.out.println("Level UP!");
-        System.out.printf("You're now on level %d.", this.level);
-        try {
-            save();
-        } catch (RuntimeException e) {
-            System.err.println("Error on save the player!");
-        }
     }
 
     public boolean exists() {
@@ -214,10 +206,10 @@ public class Player implements Persistent<Player> {
         int enemyDice = random.ints(1, 6).findFirst().getAsInt();
         if(playerDice > enemyDice) {
             enemy.hit(this.hitPoints);
-            enemy.hitted();
+            enemy.damage();
 
         } else {
-            enemy.notHitted();
+            enemy.notDamage();
         }
     }
 
@@ -250,6 +242,10 @@ public class Player implements Persistent<Player> {
         this.damaged = false;
     }
 
+    public String getPersistentPath() {
+        return this.getName().toLowerCase() + "_" + this.getConstellation().getDescription().toLowerCase();
+    }
+
     @Override
     public String toString() {
         return String.format("name:%s constellation:%s health_points:%d hit_points:%d experience_points:%d recovery_xp:%d recovery_hp:%d",
@@ -257,50 +253,8 @@ public class Player implements Persistent<Player> {
     }
 
     @Override
-    public String getPersistentPath() {
-        return this.getName();
-    }
-
-    @Override
     public byte[] getPersistentData() {
         return this.toString().getBytes();
     }
 
-    @Override
-    public void save() {
-
-        ClassLoader classLoader = getClass().getClassLoader();
-
-        String savesString = classLoader.getResource("saves/saves.data").getPath();
-
-        Path savesFilePath = Paths.get(savesString);
-
-        String savesPath = savesFilePath.getParent().toString();
-
-        String stringPath = String.format("%s/%s_%s.data", savesPath, this.getName().toLowerCase(),
-                this.getConstellation().getDescription().toLowerCase());
-
-        Path path = Paths.get(stringPath);
-
-        try(OutputStream out = new BufferedOutputStream(
-                Files.newOutputStream(path, CREATE, TRUNCATE_EXISTING))) {
-            // Player data
-            String s = this.toString();
-
-            byte data[] = s.getBytes();
-
-            out.write(data, 0, data.length);
-
-        } catch (IOException e) {
-            throw new IllegalStateException("Error creating file.");
-        }
-
-    }
-
-    @Override
-    public Player load() {
-        byte[] data = filesHelper.load(this.getName().toLowerCase()+"_"+this.getConstellation().getDescription().toLowerCase());
-        Player player = new Player(data);
-        return player;
-    }
 }

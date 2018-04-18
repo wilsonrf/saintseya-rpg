@@ -1,16 +1,15 @@
-package com.wilsonfranca.saintseya.campaign;
+package com.wilsonfranca.saintseya.player;
 
 import com.wilsonfranca.saintseya.GameEngine;
-import com.wilsonfranca.saintseya.player.Player;
 
 /**
  * Created by wilson on 15/04/18.
  */
-public class CampaignController {
+public class PlayerController {
 
     GameEngine gameEngine;
 
-    public CampaignController(GameEngine gameEngine) {
+    public PlayerController(GameEngine gameEngine) {
         this.gameEngine = gameEngine;
     }
 

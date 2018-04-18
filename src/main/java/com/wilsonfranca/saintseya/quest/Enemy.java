@@ -1,4 +1,4 @@
-package com.wilsonfranca.saintseya.battle;
+package com.wilsonfranca.saintseya.quest;
 
 import com.wilsonfranca.saintseya.player.Player;
 
@@ -18,7 +18,7 @@ public class Enemy {
 
     private int hitPoints;
 
-    private boolean hitted;
+    private boolean damaged;
 
     public Enemy(String... properties) {
        Arrays.asList(properties)
@@ -76,15 +76,15 @@ public class Enemy {
         }
     }
 
-    public void hitted() {
-        this.hitted = true;
+    public void damage() {
+        this.damaged = true;
     }
 
-    public void notHitted() {
-        this.hitted = false;
+    public void notDamage() {
+        this.damaged = false;
     }
 
-    public boolean isHitted() {
-        return hitted;
+    public boolean isDamaged() {
+        return damaged;
     }
 }

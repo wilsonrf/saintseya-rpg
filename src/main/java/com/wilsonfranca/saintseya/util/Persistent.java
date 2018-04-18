@@ -5,8 +5,5 @@ package com.wilsonfranca.saintseya.util;
  */
 public interface Persistent <T> {
 
-    String getPersistentPath();
     byte[] getPersistentData();
-    void save();
-    T load();
 }

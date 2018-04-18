@@ -13,25 +13,45 @@ public class MenuView implements Observer {
 
     MenuController menuController;
     GameEngine gameEngine;
+    private final Scanner scanner;
 
     public MenuView(MenuController menuController, GameEngine gameEngine) {
         this.menuController = menuController;
         this.gameEngine = gameEngine;
         this.gameEngine.addObserver(this);
+        this.scanner = new Scanner(System.in);
+    }
+
+    public void init() {
+        menuController.execute(0);
     }
 
     public void show() {
-        System.out.println(gameEngine.menu());
-        askForOption();
+        if(this.gameEngine.getMenu() == null) {
+            menuController.execute(0);
+        } else {
+            System.out.println(gameEngine.getMenu());
+            askForOption();
+        }
+    }
+
+
+    private void showExit() {
+        System.out.println("Bye Bye!");
     }
 
     private void askForOption() {
-        Scanner scanner = new Scanner(System.in);
         int option = scanner.nextInt();
         menuController.execute(option);
     }
 
     @Override
     public void update(Observable o, Object arg) {
+        String action = (String) arg;
+        if("menu".equalsIgnoreCase(action)) {
+            show();
+        } else if("exitGame".equalsIgnoreCase(action)) {
+            showExit();
+        }
     }
 }

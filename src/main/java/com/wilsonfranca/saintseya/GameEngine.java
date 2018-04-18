@@ -1,11 +1,10 @@
 package com.wilsonfranca.saintseya;
 
-import com.wilsonfranca.saintseya.battle.Battle;
-import com.wilsonfranca.saintseya.battle.Enemy;
-import com.wilsonfranca.saintseya.campaign.Campaign;
-import com.wilsonfranca.saintseya.campaign.CampaignService;
-import com.wilsonfranca.saintseya.player.Player;
+import com.wilsonfranca.saintseya.player.PlayerService;
+import com.wilsonfranca.saintseya.quest.Battle;
+import com.wilsonfranca.saintseya.quest.Enemy;
 import com.wilsonfranca.saintseya.menu.MenuService;
+import com.wilsonfranca.saintseya.player.Player;
 import com.wilsonfranca.saintseya.quest.Quest;
 import com.wilsonfranca.saintseya.quest.QuestPart;
 import com.wilsonfranca.saintseya.quest.QuestService;
@@ -19,7 +18,7 @@ import java.util.stream.Stream;
  */
 public class GameEngine extends Observable {
 
-    private Campaign campaign;
+    private String menu;
 
     private Player player;
 
@@ -27,17 +26,15 @@ public class GameEngine extends Observable {
 
     protected MenuService menuService;
 
-    protected CampaignService campaignService;
-
     protected QuestService questService;
+
+    protected PlayerService playerService;
 
     public GameEngine() {
         this.menuService = new MenuService();
-        this.campaignService = new CampaignService();
         this.questService = new QuestService();
+        this.playerService = new PlayerService();
     }
-
-    public Campaign getCampaign() { return campaign; }
 
     public Quest getQuest() {
         return quest;
@@ -47,37 +44,45 @@ public class GameEngine extends Observable {
         return player;
     }
 
-    public String menu() {
-        return Stream.of(menuService.banner(), menuService.options())
+    public String getMenu() {
+        return menu;
+    }
+
+    public void menu() {
+        this.menu = Stream.of(menuService.banner(), menuService.options())
                 .collect(Collectors.joining("\n"));
+        setChanged();
+        notifyObservers("menu");
     }
 
     public void newGame() {
-        this.campaign = new Campaign();
         setChanged();
-        notifyObservers("newCampaign");
+        notifyObservers("newGame");
     }
 
     public void loadGame() {
-
+        setChanged();
+        notifyObservers("loadGame");
     }
 
     public void exitGame() {
-
+        setChanged();
+        notifyObservers("exitGame");
     }
 
     public void createKnight(Player player) {
         this.player = player;
-        player.save();
+        playerService.save(this.player);
         setChanged();
         notifyObservers("startQuest");
     }
 
     public void startQuest(Quest quest) {
-        this.quest = quest;
-        //save
+        // try to load
+        this.quest = questService.load(player, quest);
         QuestPart part = questService.questPart(this.quest.getId(), this.quest.getQuestPart().getId());
         this.getQuest().setQuestPart(part);
+        questService.save(this.player, quest);
         setChanged();
         notifyObservers("startQuestPart");
     }
@@ -85,6 +90,7 @@ public class GameEngine extends Observable {
     public void startQuestPart(String partId) {
         QuestPart part = questService.questPart(this.quest.getId(), partId);
         this.getQuest().setQuestPart(part);
+        questService.save(player, part);
         if (part.hasReward()) {
             if (!questService.isPartloadedAndCompleted(player, part)) {
                 player.addXp(part.getReward().getXp());
@@ -99,6 +105,9 @@ public class GameEngine extends Observable {
                 this.quest.getQuestPart().setBattle(battle);
                 setChanged();
                 notifyObservers("battle");
+            } else {
+                setChanged();
+                notifyObservers("battleAlreadyCompleted");
             }
 
         } else {
@@ -111,19 +120,11 @@ public class GameEngine extends Observable {
         player.attack(enemy);
         if(enemy.isDead()) {
             player.won();
-            setChanged();
-            notifyObservers("enemyDead");
         } else {
             enemy.attack(this.getPlayer());
         }
-        if(player.isDead()) {
-            setChanged();
-            notifyObservers("playerDead");
-        } else {
-            setChanged();
-            notifyObservers("battle");
-        }
-
+        setChanged();
+        notifyObservers("battle");
     }
 
     public void runAway() {

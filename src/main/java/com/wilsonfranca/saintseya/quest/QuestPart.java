@@ -1,8 +1,6 @@
 package com.wilsonfranca.saintseya.quest;
 
-import com.wilsonfranca.saintseya.battle.Battle;
-import com.wilsonfranca.saintseya.battle.Enemy;
-import com.wilsonfranca.saintseya.battle.Reward;
+import com.wilsonfranca.saintseya.util.Persistent;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,9 +11,7 @@ import java.util.stream.Stream;
 /**
  * Created by wilson on 07/04/18.
  */
-public class QuestPart {
-
-    private Quest quest;
+public class QuestPart implements Persistent<QuestPart> {
 
     private String id;
 
@@ -29,8 +25,7 @@ public class QuestPart {
 
     private Battle battle;
 
-    public QuestPart(Quest quest, String... properties){
-        this.quest = quest;
+    protected QuestPart(String... properties){
         Arrays.asList(properties)
                 .stream()
                 .forEach(property -> {
@@ -54,32 +49,12 @@ public class QuestPart {
                 });
     }
 
-    public QuestPart(String... properties){
-        Arrays.asList(properties)
-                .stream()
-                .forEach(property -> {
-                    if(property.contains("id")) {
-                        this.id = property.substring(property.indexOf(":") + 1, property.length());
-                    }
-
-                    if(property.contains("next")) {
-                        this.next = property.substring(property.indexOf(":") + 1, property.length());
-                    }
-
-                    if(property.contains("reward")) {
-                        String rewardId = property.substring(property.indexOf(":") + 1, property.length());
-                        this.reward = loadReward(rewardId);
-                    }
-
-                    if(property.contains("enemy")) {
-                        String enemyId = property.substring(property.indexOf(":") + 1, property.length());
-                        this.enemy = loadEnemy(enemyId);
-                    }
-                });
-    }
-
-    public QuestPart(String currentPart) {
+    protected QuestPart(String currentPart) {
         this.id = currentPart;
+    }
+
+    public QuestPart(byte[] data) {
+        this(new String[] { new String(data) });
     }
 
     public String getId() {
@@ -173,6 +148,20 @@ public class QuestPart {
         final StringBuilder sb = new StringBuilder();
         sb.append("id:").append(id).append(";");
         sb.append("completed:").append(completed).append(";");
+        sb.append("next:").append(next);
+        sb.append("completed:").append(completed);
+        if(reward != null) {
+            sb.append("rewardId:").append(reward.getId());
+        }
+        if(enemy != null) {
+            sb.append("enemyId:").append(enemy.getId());
+        }
         return sb.toString();
     }
+
+    @Override
+    public byte[] getPersistentData() {
+        return this.toString().getBytes();
+    }
+
 }

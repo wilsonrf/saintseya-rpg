@@ -1,6 +1,5 @@
 package com.wilsonfranca.saintseya.quest;
 
-import com.wilsonfranca.saintseya.battle.Enemy;
 import com.wilsonfranca.saintseya.GameEngine;
 
 /**

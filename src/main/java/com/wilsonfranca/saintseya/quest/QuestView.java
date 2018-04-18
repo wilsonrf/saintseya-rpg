@@ -1,8 +1,6 @@
 package com.wilsonfranca.saintseya.quest;
 
 import com.wilsonfranca.saintseya.*;
-import com.wilsonfranca.saintseya.battle.Battle;
-import com.wilsonfranca.saintseya.battle.Enemy;
 import com.wilsonfranca.saintseya.player.Player;
 
 import java.io.IOException;
@@ -76,9 +74,14 @@ public class QuestView implements Observer {
                 System.out.println(String.format("%s hit You!", enemy.getName()));
             }
 
-            if (enemy.isHitted()) {
+            if (enemy.isDamaged()) {
                 System.out.println(String.format("You hit %s!", enemy.getName()));
 
+            }
+
+            if (player.isLeveledUp()) {
+                System.out.println("Level UP!");
+                System.out.printf("You're now on level %d.", this.gameEngine.getPlayer().getLevel());
             }
 
             System.out.println(String.format("%s Health Points: %d", player.getName(), player.getHealthPoints()));
@@ -93,18 +96,31 @@ public class QuestView implements Observer {
                 option = scanner.nextLine();
             }
             questController.execute(enemy, option);
+        } else if (player.isDead()) {
+            System.out.println(String.format("Knight %s of %s is dead!", player.getName(),
+                    player.getConstellation().getDescription().toLowerCase()));
+            System.out.println("Game Over.");
+        } else if (enemy.isDead()) {
+            System.out.println(String.format("You have killed %s!", enemy.getName(),
+                    player.getConstellation().getDescription().toLowerCase()));
+            show();
         } else {
             show();
         }
     }
 
-    private void showDidntRunAway() {
+    private void showDidntRanAway() {
         System.out.println("You didn't ran away");
         showBattle();
     }
 
-    private void showRunAway() {
+    private void showRanAway() {
         System.out.println("You ran away!");
+        show();
+    }
+
+    private void showAlredyBattle() {
+        System.out.println("You already fight this enemy!");
         show();
     }
 
@@ -146,7 +162,6 @@ public class QuestView implements Observer {
         }
     }
 
-
     @Override
     public void update(Observable o, Object arg) {
         String action = (String) arg;
@@ -158,9 +173,11 @@ public class QuestView implements Observer {
                 "startQuestPart".equalsIgnoreCase(action)) {
             show();
         } else if("ranAway".equalsIgnoreCase(action)) {
-            showRunAway();
+            showRanAway();
         } else if("didntRanWay".equalsIgnoreCase(action)) {
-            showDidntRunAway();
+            showDidntRanAway();
+        } else if("battleAlreadyCompleted".equalsIgnoreCase(action)) {
+            showAlredyBattle();
         }
     }
 

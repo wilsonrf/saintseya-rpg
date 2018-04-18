@@ -1,7 +1,7 @@
 package com.wilsonfranca.saintseya.menu;
 
 import com.wilsonfranca.saintseya.util.FileLoadException;
-import com.wilsonfranca.saintseya.util.FilesLoader;
+import com.wilsonfranca.saintseya.util.FilesHelper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,16 +12,16 @@ import java.util.stream.Stream;
  */
 public class MenuService {
 
-    private FilesLoader filesLoader;
+    private FilesHelper filesHelper;
 
     public MenuService() {
-        this.filesLoader = new FilesLoader(this.getClass().getClassLoader());
+        this.filesHelper = new FilesHelper();
     }
 
     private List<MenuOption> menuOptions() {
         List<MenuOption> menuOptions ;
 
-        try (Stream<String> stringStream = filesLoader.loadFileAsStringStream("data/menuoptions.txt")) {
+        try (Stream<String> stringStream = filesHelper.loadFileAsStringStream("data/menuoptions.txt")) {
 
             menuOptions = stringStream
                     .filter(s -> !"".equals(s) && s != null)
@@ -39,7 +39,7 @@ public class MenuService {
 
         String banner;
 
-        try (Stream<String> stringStream = filesLoader.loadFileAsStringStream("misc/banner.txt")) {
+        try (Stream<String> stringStream = filesHelper.loadFileAsStringStream("misc/banner.txt")) {
 
             banner = stringStream
                     .filter(s -> !"".equals(s) && s != null)

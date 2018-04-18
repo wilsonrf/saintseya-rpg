@@ -1,6 +1,7 @@
 package com.wilsonfranca.saintseya.quest;
 
 import com.wilsonfranca.saintseya.player.Player;
+import com.wilsonfranca.saintseya.util.FilesHelper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -72,5 +73,37 @@ public class QuestService {
                 throw new IllegalStateException("There is a problem loading the quest part file");
             }
         }
+    }
+
+    public void save(Player player, Quest quest) {
+        FilesHelper filesHelper = new FilesHelper();
+        filesHelper.save(player.getPersistentPath() + "_" + quest.getId(), quest.getPersistentData());
+    }
+
+    public void save(Player player, QuestPart part) {
+        FilesHelper filesHelper = new FilesHelper();
+        filesHelper.save(player.getPersistentPath() + "_" + part.getId(), part.getPersistentData());
+    }
+
+    public Quest load(Player player, Quest quest) {
+        FilesHelper filesHelper = new FilesHelper();
+        final byte[] load = filesHelper.load(player.getPersistentPath() + "_" + quest.getId());
+        if(load.length > 1) {
+            Quest loaded = new Quest(load);
+            return loaded;
+        }
+
+        return quest;
+    }
+
+    public QuestPart load(Player player, QuestPart part) {
+        FilesHelper filesHelper = new FilesHelper();
+        final byte[] load = filesHelper.load(player.getPersistentPath() + "_" + part.getId());
+        if(load.length > 1) {
+            QuestPart loaded = new QuestPart(load);
+            return loaded;
+        }
+
+        return part;
     }
 }

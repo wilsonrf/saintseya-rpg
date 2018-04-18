@@ -33,7 +33,7 @@ public class PlayerTest {
         String stringData = "name:player constellation:andromeda health_points:15 hit_points:2 experience_points:0 recovery_xp:1 recovery_hp:0";
         byte [] data = stringData.getBytes();
         when(filesHelper.load(anyString())).thenReturn(data);
-        Player loaded = player.load();
+        Player loaded = new Player(filesHelper.load("player"));
         assertThat(loaded.getName()).isEqualTo("player");
         assertThat(loaded.getConstellation()).isEqualTo(Constellation.ANDROMEDA);
         assertThat(loaded.getHealthPoints()).isEqualTo(15);

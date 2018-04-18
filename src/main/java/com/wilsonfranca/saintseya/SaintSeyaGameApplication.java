@@ -1,7 +1,7 @@
 package com.wilsonfranca.saintseya;
 
-import com.wilsonfranca.saintseya.campaign.CampaignController;
-import com.wilsonfranca.saintseya.campaign.CampaignView;
+import com.wilsonfranca.saintseya.player.PlayerController;
+import com.wilsonfranca.saintseya.player.PlayerView;
 import com.wilsonfranca.saintseya.menu.MenuController;
 import com.wilsonfranca.saintseya.menu.MenuView;
 import com.wilsonfranca.saintseya.quest.QuestController;
@@ -16,10 +16,10 @@ public class SaintSeyaGameApplication {
         GameEngine gameEngine = new GameEngine();
         MenuController menuController = new MenuController(gameEngine);
         MenuView menuView = new MenuView(menuController, gameEngine);
-        CampaignController campaignController = new CampaignController(gameEngine);
-        CampaignView campaignView = new CampaignView(campaignController, gameEngine);
+        PlayerController playerController = new PlayerController(gameEngine);
+        PlayerView playerView = new PlayerView(playerController, gameEngine);
         QuestController questController = new QuestController(gameEngine);
         QuestView questView = new QuestView(questController, gameEngine);
-        menuView.show();
+        menuView.init();
     }
 }
