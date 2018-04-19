@@ -70,7 +70,10 @@ public class GameEngine extends Observable {
         notifyObservers("exitGame");
     }
 
-    public void createKnight(Player player) {
+    public void createKnight(Player player, boolean overwrite) {
+        if (overwrite) {
+            playerService.deleteAllData(player);
+        }
         this.player = player;
         playerService.save(this.player);
         setChanged();
@@ -78,7 +81,6 @@ public class GameEngine extends Observable {
     }
 
     public void startQuest(Quest quest) {
-        // try to load
         this.quest = questService.load(player, quest);
         QuestPart part = questService.questPart(this.quest.getId(), this.quest.getQuestPart().getId());
         this.getQuest().setQuestPart(part);
@@ -90,7 +92,8 @@ public class GameEngine extends Observable {
     public void startQuestPart(String partId) {
         QuestPart part = questService.questPart(this.quest.getId(), partId);
         this.getQuest().setQuestPart(part);
-        questService.save(player, part);
+        questService.save(this.player, quest);
+        questService.save(this.player, part);
         if (part.hasReward()) {
             if (!questService.isPartloadedAndCompleted(player, part)) {
                 player.addXp(part.getReward().getXp());

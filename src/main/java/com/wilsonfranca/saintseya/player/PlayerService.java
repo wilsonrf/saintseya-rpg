@@ -14,7 +14,10 @@ public class PlayerService {
     }
 
     public void save(Player player) {
-        filesHelper = new FilesHelper();
         filesHelper.save(player.getPersistentPath(), player.getPersistentData());
+    }
+
+    public void deleteAllData(Player player) {
+        filesHelper.deleteAllKnightData(player.getName());
     }
 }

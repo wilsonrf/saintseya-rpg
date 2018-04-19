@@ -51,7 +51,7 @@ public class Player implements Persistent<Player> {
     protected Player(String... properties) {
         Arrays.asList(properties)
                 .stream()
-                .map(s -> s.split(" "))
+                .map(s -> s.split(";"))
                 .flatMap(Arrays::stream)
                 .forEach(property -> {
 
@@ -138,7 +138,7 @@ public class Player implements Persistent<Player> {
 
             stringStream
                     .filter(s -> !"".equals(s) && s != null)
-                    .map(line -> line.split(" "))
+                    .map(line -> line.split(";"))
                     .flatMap(Arrays::stream)
                     .forEach(property -> {
                         if(property.contains("health_points")) {
@@ -248,8 +248,16 @@ public class Player implements Persistent<Player> {
 
     @Override
     public String toString() {
-        return String.format("name:%s constellation:%s health_points:%d hit_points:%d experience_points:%d recovery_xp:%d recovery_hp:%d",
-                name, constellation.getDescription().toLowerCase(), healthPoints, hitPoints, experience, recoveryXpPoints, recoveryHpPoints);
+        final StringBuilder sb = new StringBuilder();
+        sb.append("name:").append(name).append(";");
+        sb.append("constellation:").append(constellation.getDescription().toLowerCase()).append(";");
+        sb.append("level:").append(level).append(";");
+        sb.append("experience_points:").append(experience).append(";");
+        sb.append("health_points:").append(healthPoints).append(";");
+        sb.append("hit_points:").append(hitPoints).append(";");
+        sb.append("recovery_xp:").append(recoveryXpPoints).append(";");
+        sb.append("recovery_hp:").append(recoveryHpPoints).append(";");
+        return sb.toString();
     }
 
     @Override

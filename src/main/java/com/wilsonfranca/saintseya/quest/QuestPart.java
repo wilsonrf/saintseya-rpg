@@ -148,13 +148,15 @@ public class QuestPart implements Persistent<QuestPart> {
         final StringBuilder sb = new StringBuilder();
         sb.append("id:").append(id).append(";");
         sb.append("completed:").append(completed).append(";");
-        sb.append("next:").append(next);
-        sb.append("completed:").append(completed);
+        if (next != null && !"".equals(next)) {
+            sb.append("next:").append(next).append(";");
+        }
+        sb.append("completed:").append(completed).append(";");
         if(reward != null) {
-            sb.append("rewardId:").append(reward.getId());
+            sb.append("rewardId:").append(reward.getId()).append(";");
         }
         if(enemy != null) {
-            sb.append("enemyId:").append(enemy.getId());
+            sb.append("enemyId:").append(enemy.getId()).append(";");
         }
         return sb.toString();
     }

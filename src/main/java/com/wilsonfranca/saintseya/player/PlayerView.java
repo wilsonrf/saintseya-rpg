@@ -74,11 +74,11 @@ public class PlayerView implements Observer {
             } while (overwrite == null || (!"R".equalsIgnoreCase(overwrite) && !"O".equalsIgnoreCase(overwrite)));
             if ("O".equalsIgnoreCase(overwrite)) {
                 System.out.println(String.format("Nice! You're now %s Knight of %s", name, constellation.getDescription()));
-                playerController.execute(player);
+                playerController.execute(player, true);
             }
         } else {
             System.out.println(String.format("Nice! You're now %s Knight of %s", name, constellation.getDescription()));
-            playerController.execute(player);
+            playerController.execute(player, false);
         }
     }
 
@@ -112,7 +112,7 @@ public class PlayerView implements Observer {
                     player.getName(), player.getConstellation().getDescription()));
             FilesHelper filesHelper = new FilesHelper();
             Player loaded = new Player(filesHelper.load(player.getPersistentPath()));
-            playerController.execute(loaded);
+            playerController.execute(loaded, false);
         } else {
             System.out.println(String.format("We didn't found any saved game of %s of %s Knight.",
                     player.getName(), player.getConstellation().getDescription()));
@@ -129,7 +129,7 @@ public class PlayerView implements Observer {
 
             if("N".equalsIgnoreCase(option)) {
                 System.out.println(String.format("Nice! You're now %s Knight of %s", name, constellation.getDescription()));
-                playerController.execute(player);
+                playerController.execute(player, false);
             }
 
         }

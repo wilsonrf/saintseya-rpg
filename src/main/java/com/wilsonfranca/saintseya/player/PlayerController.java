@@ -13,8 +13,9 @@ public class PlayerController {
         this.gameEngine = gameEngine;
     }
 
-    public void execute(Player player) {
-        gameEngine.createKnight(player);
+    public void execute(Player player, boolean overwrite) {
+        gameEngine.createKnight(player, overwrite)
+        ;
     }
 
 }

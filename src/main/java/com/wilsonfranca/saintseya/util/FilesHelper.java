@@ -4,9 +4,8 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.nio.file.StandardOpenOption.CREATE;
@@ -92,6 +91,41 @@ public class FilesHelper {
             throw new IllegalArgumentException(String.format("The file path %s does not exists", filePath));
         }
 
+    }
+
+    public void deleteAllKnightData(final String knight) {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        String savesString = classLoader.getResource("saves/saves.data").getPath();
+
+        Path savesFilePath = Paths.get(savesString);
+
+        String savesPath = savesFilePath.getParent().toString();
+
+        try {
+
+            PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**"+knight+"**");
+
+            Files.find(Paths.get(savesPath), 2,
+                    (path, attr) -> {
+                        Path file = path.getFileName();
+                        boolean match = pathMatcher.matches(file);
+                        return match;
+                    })
+                    .collect(Collectors.toList())
+                    .stream()
+                    .forEach((path) -> {
+                        try {
+                            Files.delete(path);
+                        } catch (IOException e) {
+                            System.err.println("Error on delete file");
+                        }
+                    });
+
+        } catch (IOException e) {
+            System.err.println("Error on delete file");
+        }
     }
 
 }
