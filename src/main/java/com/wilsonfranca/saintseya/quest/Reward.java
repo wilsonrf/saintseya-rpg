@@ -1,4 +1,4 @@
-package com.wilsonfranca.saintseya;
+package com.wilsonfranca.saintseya.quest;
 
 import java.util.Arrays;
 
@@ -19,15 +19,15 @@ public class Reward {
                 .forEach(property -> {
 
                     if(property.contains("id")) {
-                        this.id = property.substring(property.indexOf(":") + 1, property.length());
+                        this.id = property.substring(property.indexOf(':') + 1, property.length());
                     }
 
                     if(property.contains("xp")) {
-                        this.xp = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                        this.xp = Integer.valueOf(property.substring(property.indexOf(':') + 1, property.length()));
                     }
 
                     if(property.contains("hp")) {
-                        this.hp = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                        this.hp = Integer.valueOf(property.substring(property.indexOf(':') + 1, property.length()));
                     }
                 });
     }

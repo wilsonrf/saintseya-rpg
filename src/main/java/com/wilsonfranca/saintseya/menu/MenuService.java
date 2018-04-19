@@ -1,28 +1,27 @@
-package com.wilsonfranca.saintseya;
+package com.wilsonfranca.saintseya.menu;
 
 import com.wilsonfranca.saintseya.util.FileLoadException;
-import com.wilsonfranca.saintseya.util.FilesLoader;
+import com.wilsonfranca.saintseya.util.FilesHelper;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Created by wilson.franca on 06/04/18.
+ * Created by wilson on 15/04/18.
  */
-public class MainMenu {
+public class MenuService {
 
-    private FilesLoader filesLoader;
+    private FilesHelper filesHelper;
 
-    public MainMenu() {
-        this.filesLoader = new FilesLoader(this.getClass().getClassLoader());
+    public MenuService() {
+        this.filesHelper = new FilesHelper();
     }
 
-    private List<MenuOption> getMenuOptions() {
-
+    private List<MenuOption> menuOptions() {
         List<MenuOption> menuOptions ;
 
-        try (Stream<String> stringStream = filesLoader.loadFileAsStringStream("data/menuoptions.txt")) {
+        try (Stream<String> stringStream = filesHelper.loadFileAsStringStream("data/menuoptions.txt")) {
 
             menuOptions = stringStream
                     .filter(s -> !"".equals(s) && s != null)
@@ -34,14 +33,13 @@ public class MainMenu {
         } catch (FileLoadException e) {
             throw new IllegalStateException("There is a problem loading the menu options file");
         }
-
     }
 
     public String banner() {
 
         String banner;
 
-        try (Stream<String> stringStream = filesLoader.loadFileAsStringStream("misc/banner.txt")) {
+        try (Stream<String> stringStream = filesHelper.loadFileAsStringStream("misc/banner.txt")) {
 
             banner = stringStream
                     .filter(s -> !"".equals(s) && s != null)
@@ -57,7 +55,7 @@ public class MainMenu {
 
     public String options() {
 
-        String options = this.getMenuOptions()
+        String options = this.menuOptions()
                 .stream()
                 .map(menuOption -> String.format("%d) %s", menuOption.getId(), menuOption.getText()))
                 .collect(Collectors.joining("\n"));

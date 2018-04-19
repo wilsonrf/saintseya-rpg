@@ -10,12 +10,12 @@ public class FileLoadException extends RuntimeException {
 
     private transient Path path;
 
-    public FileLoadException(String message, Path path, IOException e) {
+    public FileLoadException(final String message, final Path path, IOException e) {
         super(message, e);
         this.path = path;
     }
 
-    public FileLoadException(String message) {
+    public FileLoadException(final String message) {
         super(message);
     }
 

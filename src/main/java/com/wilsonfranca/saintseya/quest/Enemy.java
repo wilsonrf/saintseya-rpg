@@ -1,4 +1,6 @@
-package com.wilsonfranca.saintseya;
+package com.wilsonfranca.saintseya.quest;
+
+import com.wilsonfranca.saintseya.player.Player;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -16,25 +18,27 @@ public class Enemy {
 
     private int hitPoints;
 
-   public Enemy(String... properties) {
+    private boolean damaged;
+
+    public Enemy(String... properties) {
        Arrays.asList(properties)
                .stream()
                .forEach(property -> {
 
                    if(property.contains("id")) {
-                       this.id = property.substring(property.indexOf(":") + 1, property.length());
+                       this.id = property.substring(property.indexOf(':') + 1, property.length());
                    }
 
                    if(property.contains("name")) {
-                       this.name = property.substring(property.indexOf(":") + 1, property.length());
+                       this.name = property.substring(property.indexOf(':') + 1, property.length());
                    }
 
                    if(property.contains("health_points")) {
-                       this.healthPoints = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                       this.healthPoints = Integer.valueOf(property.substring(property.indexOf(':') + 1, property.length()));
                    }
 
                    if(property.contains("hit_points")) {
-                       this.hitPoints = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                       this.hitPoints = Integer.valueOf(property.substring(property.indexOf(':') + 1, property.length()));
                    }
                });
    }
@@ -64,13 +68,23 @@ public class Enemy {
         int playerDice = random.ints(1, 6).findFirst().getAsInt();
         int enemyDice = random.ints(1, 6).findFirst().getAsInt();
         if(enemyDice > playerDice) {
-            System.out.println(String.format("%s hit You!", this.getName()));
             player.hit(this.hitPoints);
-            System.out.println(String.format("%s Health Points: %d", player.getName(), player.getHealthPoints()));
-            System.out.println(String.format("%s Health Points: %d", this.getName(), this.getHealthPoints()));
+            player.damage();
 
         } else {
-            System.out.println(System.out.format("%s didn't hit You!", this.getName()));
+            player.notDamage();
         }
+    }
+
+    public void damage() {
+        this.damaged = true;
+    }
+
+    public void notDamage() {
+        this.damaged = false;
+    }
+
+    public boolean isDamaged() {
+        return damaged;
     }
 }

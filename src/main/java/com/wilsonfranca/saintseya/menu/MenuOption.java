@@ -1,4 +1,4 @@
-package com.wilsonfranca.saintseya;
+package com.wilsonfranca.saintseya.menu;
 
 /**
  * Created by wilson on 04/04/18.

@@ -1,4 +1,4 @@
-package com.wilsonfranca.saintseya;
+package com.wilsonfranca.saintseya.player;
 
 /**
  * Created by wilson.franca on 06/04/18.

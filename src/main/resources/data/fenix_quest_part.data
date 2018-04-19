@@ -6,3 +6,4 @@ id:fenix_quest_part_1_1_2;parent:fenix_quest_part_1_1;quest:fenix_quest;reward:r
 id:fenix_quest_part_1_1_3;parent:fenix_quest_part_1_1;quest:fenix_quest;reward:reward_2;next:fenix_quest_part_1_1
 id:fenix_quest_part_1_1_4;parent:fenix_quest_part_1_1;quest:fenix_quest;next:fenix_quest_part_1
 id:fenix_quest_part_1_2_1;parent:fenix_quest_part_1_2;quest:fenix_quest;enemy:enemy_1;next:fenix_quest_part_1_2
+id:fenix_quest_part_1_2_2;parent:fenix_quest_part_1_2;quest:fenix_quest;next:fenix_quest_part_1
