@@ -27,10 +27,8 @@ public class QuestService {
             return stringStream
                     .filter(s -> !"".equals(s) && s != null)
                     .map(line -> line.split(";"))
-                    .map(strings -> new QuestPart(strings))
-                    .filter(questPart -> {
-                        return questPart.getId().equals(partId);
-                    })
+                    .map(QuestPart::new)
+                    .filter(questPart -> questPart.getId().equals(partId))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException(partId));
         } catch (IOException e) {
@@ -56,7 +54,7 @@ public class QuestService {
 
         Path path = Paths.get(stringPath);
 
-        if(!Files.exists(path)) {
+        if(!path.toFile().exists()) {
             return false;
         } else {
             try (Stream<String> stringStream = Files.lines(path)) {
@@ -65,8 +63,7 @@ public class QuestService {
                         .filter(s -> !"".equals(s) && s != null)
                         .map(line -> line.split(";"))
                         .flatMap(Arrays::stream)
-                        .filter(s -> s.equalsIgnoreCase("completed:true"))
-                        .findAny().isPresent();
+                        .anyMatch(s -> s.equalsIgnoreCase("completed:true"));
 
 
             } catch (IOException e) {
@@ -89,8 +86,7 @@ public class QuestService {
         FilesHelper filesHelper = new FilesHelper();
         final byte[] load = filesHelper.load(player.getPersistentPath() + "_" + quest.getId());
         if(load.length > 1) {
-            Quest loaded = new Quest(load);
-            return loaded;
+            return new Quest(load);
         }
 
         return quest;
@@ -100,8 +96,7 @@ public class QuestService {
         FilesHelper filesHelper = new FilesHelper();
         final byte[] load = filesHelper.load(player.getPersistentPath() + "_" + part.getId());
         if(load.length > 1) {
-            QuestPart loaded = new QuestPart(load);
-            return loaded;
+            return new QuestPart(load);
         }
 
         return part;

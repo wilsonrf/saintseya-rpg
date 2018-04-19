@@ -7,9 +7,9 @@ import com.wilsonfranca.saintseya.GameEngine;
  */
 public class MenuController {
 
-    GameEngine gameEngine;
+    private final GameEngine gameEngine;
 
-    public MenuController(GameEngine gameEngine) {
+    public MenuController(final GameEngine gameEngine) {
         this.gameEngine = gameEngine;
     }
 

@@ -16,17 +16,21 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  */
 public class FilesHelper {
 
+    public static final String SAVES_SAVES_DATA = "saves/saves.data";
+    public static final String ERROR_ON_DELETE_FILE = "Error on delete file";
+    public static final String S_S_DATA = "%s/%s.data";
+
     public void save(String fileName, byte[] data) {
 
         ClassLoader classLoader = getClass().getClassLoader();
 
-        String savesString = classLoader.getResource("saves/saves.data").getPath();
+        String savesString = classLoader.getResource(SAVES_SAVES_DATA).getPath();
 
         Path savesFilePath = Paths.get(savesString);
 
         String savesPath = savesFilePath.getParent().toString();
 
-        String stringPath = String.format("%s/%s.data", savesPath, fileName);
+        String stringPath = String.format(S_S_DATA, savesPath, fileName);
 
         Path path = Paths.get(stringPath);
 
@@ -44,17 +48,17 @@ public class FilesHelper {
 
         ClassLoader classLoader = getClass().getClassLoader();
 
-        String savesString = classLoader.getResource("saves/saves.data").getPath();
+        String savesString = classLoader.getResource(SAVES_SAVES_DATA).getPath();
 
         Path savesFilePath = Paths.get(savesString);
 
         String savesPath = savesFilePath.getParent().toString();
 
-        String stringPath = String.format("%s/%s.data", savesPath, fileName);
+        String stringPath = String.format(S_S_DATA, savesPath, fileName);
 
         Path path = Paths.get(stringPath);
 
-        if(Files.exists(path)) {
+        if(path.toFile().exists()) {
 
             try {
 
@@ -97,34 +101,33 @@ public class FilesHelper {
 
         ClassLoader classLoader = getClass().getClassLoader();
 
-        String savesString = classLoader.getResource("saves/saves.data").getPath();
+        String savesString = classLoader.getResource(SAVES_SAVES_DATA).getPath();
 
         Path savesFilePath = Paths.get(savesString);
 
         String savesPath = savesFilePath.getParent().toString();
 
-        try {
+        PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**"+knight+"**");
 
-            PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**"+knight+"**");
-
-            Files.find(Paths.get(savesPath), 2,
+        try (Stream<Path> stream = Files.find(Paths.get(savesPath), 2,
                     (path, attr) -> {
                         Path file = path.getFileName();
                         boolean match = pathMatcher.matches(file);
                         return match;
-                    })
-                    .collect(Collectors.toList())
+                    })) {
+
+                    stream.collect(Collectors.toList())
                     .stream()
                     .forEach((path) -> {
                         try {
                             Files.delete(path);
                         } catch (IOException e) {
-                            System.err.println("Error on delete file");
+                            System.err.println(ERROR_ON_DELETE_FILE);
                         }
                     });
 
         } catch (IOException e) {
-            System.err.println("Error on delete file");
+            System.err.println(ERROR_ON_DELETE_FILE);
         }
     }
 

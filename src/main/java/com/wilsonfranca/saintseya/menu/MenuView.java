@@ -11,11 +11,11 @@ import java.util.Scanner;
  */
 public class MenuView implements Observer {
 
-    MenuController menuController;
-    GameEngine gameEngine;
+    private final MenuController menuController;
+    private final GameEngine gameEngine;
     private final Scanner scanner;
 
-    public MenuView(MenuController menuController, GameEngine gameEngine) {
+    public MenuView(final MenuController menuController, final GameEngine gameEngine) {
         this.menuController = menuController;
         this.gameEngine = gameEngine;
         this.gameEngine.addObserver(this);

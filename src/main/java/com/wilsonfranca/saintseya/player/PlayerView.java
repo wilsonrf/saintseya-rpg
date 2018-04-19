@@ -18,11 +18,12 @@ import java.util.stream.Stream;
  */
 public class PlayerView implements Observer {
 
-    PlayerController playerController;
-    GameEngine gameEngine;
-    Scanner scanner;
+    public static final String NICE_YOU_RE_NOW_S_KNIGHT_OF_S = "Nice! You're now %s Knight of %s";
+    private final PlayerController playerController;
+    private final GameEngine gameEngine;
+    private Scanner scanner;
 
-    public PlayerView(PlayerController playerController, GameEngine gameEngine) {
+    public PlayerView(final PlayerController playerController, final GameEngine gameEngine) {
         this.playerController = playerController;
         this.gameEngine = gameEngine;
         this.gameEngine.addObserver(this);
@@ -73,11 +74,11 @@ public class PlayerView implements Observer {
                 overwrite = scanner.nextLine();
             } while (overwrite == null || (!"R".equalsIgnoreCase(overwrite) && !"O".equalsIgnoreCase(overwrite)));
             if ("O".equalsIgnoreCase(overwrite)) {
-                System.out.println(String.format("Nice! You're now %s Knight of %s", name, constellation.getDescription()));
+                System.out.println(String.format(NICE_YOU_RE_NOW_S_KNIGHT_OF_S, name, constellation.getDescription()));
                 playerController.execute(player, true);
             }
         } else {
-            System.out.println(String.format("Nice! You're now %s Knight of %s", name, constellation.getDescription()));
+            System.out.println(String.format(NICE_YOU_RE_NOW_S_KNIGHT_OF_S, name, constellation.getDescription()));
             playerController.execute(player, false);
         }
     }
@@ -128,7 +129,7 @@ public class PlayerView implements Observer {
             }
 
             if("N".equalsIgnoreCase(option)) {
-                System.out.println(String.format("Nice! You're now %s Knight of %s", name, constellation.getDescription()));
+                System.out.println(String.format(NICE_YOU_RE_NOW_S_KNIGHT_OF_S, name, constellation.getDescription()));
                 playerController.execute(player, false);
             }
 

@@ -7,15 +7,14 @@ import com.wilsonfranca.saintseya.GameEngine;
  */
 public class PlayerController {
 
-    GameEngine gameEngine;
+    private final GameEngine gameEngine;
 
-    public PlayerController(GameEngine gameEngine) {
+    public PlayerController(final GameEngine gameEngine) {
         this.gameEngine = gameEngine;
     }
 
     public void execute(Player player, boolean overwrite) {
-        gameEngine.createKnight(player, overwrite)
-        ;
+        gameEngine.createKnight(player, overwrite);
     }
 
 }

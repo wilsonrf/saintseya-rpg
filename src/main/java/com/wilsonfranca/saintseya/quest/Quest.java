@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * Created by wilson on 07/04/18.
  */
-public class Quest implements Persistent<Quest> {
+public class Quest implements Persistent {
 
     private String id;
 
@@ -38,29 +38,29 @@ public class Quest implements Persistent<Quest> {
                 .forEach(property -> {
 
                     if(property.contains("id")) {
-                        this.id = property.substring(property.indexOf(":") + 1, property.length());
+                        this.id = property.substring(property.indexOf(':') + 1, property.length());
                     }
 
                     if(property.contains("createdDate")) {
-                        long millis = Long.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                        long millis = Long.valueOf(property.substring(property.indexOf(':') + 1, property.length()));
                         this.createdDate = Instant.ofEpochMilli(millis);
                     }
 
                     if(property.contains("lastSaveDate")) {
-                        long millis = Long.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                        long millis = Long.valueOf(property.substring(property.indexOf(':') + 1, property.length()));
                         this.lastSaveDate = Instant.ofEpochMilli(millis);
                     }
 
                     if(property.contains("started")) {
-                        this.started = Boolean.getBoolean(property.substring(property.indexOf(":") + 1, property.length()));
+                        this.started = Boolean.getBoolean(property.substring(property.indexOf(':') + 1, property.length()));
                     }
 
                     if(property.contains("completed")) {
-                        this.completed = Boolean.getBoolean(property.substring(property.indexOf(":") + 1, property.length()));
+                        this.completed = Boolean.getBoolean(property.substring(property.indexOf(':') + 1, property.length()));
                     }
 
                     if(property.contains("currentPartId")) {
-                        this.questPart = new QuestPart(property.substring(property.indexOf(":") + 1, property.length()));
+                        this.questPart = new QuestPart(property.substring(property.indexOf(':') + 1, property.length()));
                     }
 
                 });

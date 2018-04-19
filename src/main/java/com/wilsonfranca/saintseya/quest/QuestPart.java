@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 /**
  * Created by wilson on 07/04/18.
  */
-public class QuestPart implements Persistent<QuestPart> {
+public class QuestPart implements Persistent {
 
     private String id;
 
@@ -30,20 +30,20 @@ public class QuestPart implements Persistent<QuestPart> {
                 .stream()
                 .forEach(property -> {
                     if(property.contains("id")) {
-                        this.id = property.substring(property.indexOf(":") + 1, property.length());
+                        this.id = property.substring(property.indexOf(':') + 1, property.length());
                     }
 
                     if(property.contains("next")) {
-                        this.next = property.substring(property.indexOf(":") + 1, property.length());
+                        this.next = property.substring(property.indexOf(':') + 1, property.length());
                     }
 
                     if(property.contains("reward")) {
-                        String rewardId = property.substring(property.indexOf(":") + 1, property.length());
+                        String rewardId = property.substring(property.indexOf(':') + 1, property.length());
                         this.reward = loadReward(rewardId);
                     }
 
                     if(property.contains("enemy")) {
-                        String enemyId = property.substring(property.indexOf(":") + 1, property.length());
+                        String enemyId = property.substring(property.indexOf(':') + 1, property.length());
                         this.enemy = loadEnemy(enemyId);
                     }
                 });
@@ -101,8 +101,7 @@ public class QuestPart implements Persistent<QuestPart> {
 
         ClassLoader classLoader = getClass().getClassLoader();
 
-        String path = classLoader.getResource(String.format("data/reward.data",
-                rewardId.toLowerCase())).getPath();
+        String path = classLoader.getResource("data/reward.data").getPath();
 
         try (Stream<String> stringStream = Files.lines(Paths.get(path))) {
 
@@ -124,8 +123,7 @@ public class QuestPart implements Persistent<QuestPart> {
 
         ClassLoader classLoader = getClass().getClassLoader();
 
-        String path = classLoader.getResource(String.format("data/enemy.data",
-                enemyId.toLowerCase())).getPath();
+        String path = classLoader.getResource("data/enemy.data").getPath();
 
         try (Stream<String> stringStream = Files.lines(Paths.get(path))) {
 

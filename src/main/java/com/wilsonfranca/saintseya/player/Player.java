@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 /**
  * Created by wilson.franca on 06/04/18.
  */
-public class Player implements Persistent<Player> {
+public class Player implements Persistent {
 
     public static final int XP_POINTS_TO_LEVEL_UP = 5;
 
@@ -56,32 +56,32 @@ public class Player implements Persistent<Player> {
                 .forEach(property -> {
 
                     if(property.contains("name")) {
-                        this.name = property.substring(property.indexOf(":") + 1, property.length());
+                        this.name = property.substring(property.indexOf(':') + 1, property.length());
                     }
 
                     if(property.contains("constellation")) {
-                        String constellation = property.substring(property.indexOf(":") + 1, property.length());
-                        this.constellation = Constellation.getByName(constellation);
+                        String constellationName = property.substring(property.indexOf(':') + 1, property.length());
+                        this.constellation = Constellation.getByName(constellationName);
                     }
 
                     if(property.contains("health_points")) {
-                        this.healthPoints = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                        this.healthPoints = Integer.valueOf(property.substring(property.indexOf(':') + 1, property.length()));
                     }
 
                     if(property.contains("hit_points")) {
-                        this.hitPoints = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                        this.hitPoints = Integer.valueOf(property.substring(property.indexOf(':') + 1, property.length()));
                     }
 
                     if(property.contains("experience_points")) {
-                        this.experience = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                        this.experience = Integer.valueOf(property.substring(property.indexOf(':') + 1, property.length()));
                     }
 
                     if(property.contains("recovery_xp")) {
-                        this.recoveryXpPoints = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                        this.recoveryXpPoints = Integer.valueOf(property.substring(property.indexOf(':') + 1, property.length()));
                     }
 
                     if(property.contains("recovery_hp")) {
-                        this.recoveryHpPoints = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                        this.recoveryHpPoints = Integer.valueOf(property.substring(property.indexOf(':') + 1, property.length()));
                     }
 
                 });
@@ -142,16 +142,16 @@ public class Player implements Persistent<Player> {
                     .flatMap(Arrays::stream)
                     .forEach(property -> {
                         if(property.contains("health_points")) {
-                            String stringValue = property.substring(property.indexOf(":") + 1, property.length());
+                            String stringValue = property.substring(property.indexOf(':') + 1, property.length());
                             this.healthPoints = Integer.valueOf(stringValue);
                         } else if(property.contains("hit_points")) {
-                            String stringValue = property.substring(property.indexOf(":") + 1, property.length());
+                            String stringValue = property.substring(property.indexOf(':') + 1, property.length());
                             this.hitPoints = Integer.valueOf(stringValue);
                         } else if(property.contains("recovery_xp")) {
-                            String stringValue = property.substring(property.indexOf(":") + 1, property.length());
+                            String stringValue = property.substring(property.indexOf(':') + 1, property.length());
                             this.recoveryXpPoints = Integer.valueOf(stringValue);
                         } else if(property.contains("recovery_hp")) {
-                            String stringValue = property.substring(property.indexOf(":") + 1, property.length());
+                            String stringValue = property.substring(property.indexOf(':') + 1, property.length());
                             this.recoveryHpPoints = Integer.valueOf(stringValue);
                         }
                     });
@@ -197,7 +197,7 @@ public class Player implements Persistent<Player> {
 
         Path path = Paths.get(stringPath);
 
-        return Files.exists(path);
+        return path.toFile().exists();
     }
 
     public void attack(Enemy enemy) {

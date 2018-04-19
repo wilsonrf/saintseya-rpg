@@ -2,6 +2,8 @@ package com.wilsonfranca.saintseya.quest;
 
 import com.wilsonfranca.saintseya.*;
 import com.wilsonfranca.saintseya.player.Player;
+import com.wilsonfranca.saintseya.util.FileLoadException;
+import com.wilsonfranca.saintseya.util.FilesHelper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,21 +19,29 @@ import java.util.stream.Stream;
  */
 public class QuestView implements Observer {
 
-    QuestController questController;
-    GameEngine gameEngine;
-    Scanner scanner;
+    private final QuestController questController;
+    private final GameEngine gameEngine;
+    private final Scanner scanner;
+    private FilesHelper filesHelper;
 
-    public QuestView(QuestController questController, GameEngine gameEngine) {
+    public QuestView(final QuestController questController, final GameEngine gameEngine) {
         this.questController = questController;
         this.gameEngine = gameEngine;
         this.gameEngine.addObserver(this);
         this.scanner = new Scanner(System.in);
+        this.filesHelper = new FilesHelper();
     }
 
-    private void show() {
+    public void setFilesHelper(FilesHelper filesHelper) {
+        this.filesHelper = filesHelper;
+    }
+
+    protected void show() {
 
         if (this.gameEngine.getQuest() == null) {
             // Create Quest here
+            // Hard coded quest fenix_quest
+            //TODO support more quests
             Quest quest = new Quest("fenix_quest");
             questBanner(quest);
             questController.execute(quest);
@@ -101,8 +111,7 @@ public class QuestView implements Observer {
                     player.getConstellation().getDescription().toLowerCase()));
             System.out.println("Game Over.");
         } else if (enemy.isDead()) {
-            System.out.println(String.format("You have killed %s!", enemy.getName(),
-                    player.getConstellation().getDescription().toLowerCase()));
+            System.out.println(String.format("You have killed %s!", enemy.getName()));
             show();
         } else {
             show();
@@ -126,19 +135,16 @@ public class QuestView implements Observer {
 
     private void questBanner(Quest quest) {
 
-        ClassLoader classLoader = getClass().getClassLoader();
+        String path = String.format("quest/%s_banner.txt", quest.getId().toLowerCase());
 
-        String path = classLoader.getResource(String.format("quest/%s_banner.txt",
-                quest.getId().toLowerCase())).getPath();
-
-        try (Stream<String> stringStream = Files.lines(Paths.get(path))) {
+        try (Stream<String> stringStream = filesHelper.loadFileAsStringStream(path)) {
 
             String banner = stringStream
                     .filter(s -> !"".equals(s) && s != null)
                     .collect(Collectors.joining("\n"));
             System.out.println(banner);
 
-        } catch (IOException e) {
+        } catch (FileLoadException e) {
             throw new IllegalStateException("There is a problem loading the quest banner file");
         }
     }

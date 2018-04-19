@@ -13,7 +13,7 @@ public class Battle {
 
     private boolean ended;
 
-    public Battle(Player player, Enemy enemy) {
+    public Battle(final Player player, final Enemy enemy) {
         this.player = player;
         this.enemy = enemy;
     }
@@ -24,5 +24,13 @@ public class Battle {
 
     public void end() {
         this.ended = true;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Enemy getEnemy() {
+        return enemy;
     }
 }

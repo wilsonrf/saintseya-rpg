@@ -17,9 +17,9 @@ public class SaintSeyaGameApplication {
         MenuController menuController = new MenuController(gameEngine);
         MenuView menuView = new MenuView(menuController, gameEngine);
         PlayerController playerController = new PlayerController(gameEngine);
-        PlayerView playerView = new PlayerView(playerController, gameEngine);
+        new PlayerView(playerController, gameEngine);
         QuestController questController = new QuestController(gameEngine);
-        QuestView questView = new QuestView(questController, gameEngine);
+        new QuestView(questController, gameEngine);
         menuView.init();
     }
 }

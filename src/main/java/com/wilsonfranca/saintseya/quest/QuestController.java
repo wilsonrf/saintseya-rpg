@@ -7,9 +7,9 @@ import com.wilsonfranca.saintseya.GameEngine;
  */
 public class QuestController {
 
-    GameEngine gameEngine;
+    private final GameEngine gameEngine;
 
-    public QuestController(GameEngine gameEngine) {
+    public QuestController(final GameEngine gameEngine) {
         this.gameEngine = gameEngine;
     }
 

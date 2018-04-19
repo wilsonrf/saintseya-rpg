@@ -26,19 +26,19 @@ public class Enemy {
                .forEach(property -> {
 
                    if(property.contains("id")) {
-                       this.id = property.substring(property.indexOf(":") + 1, property.length());
+                       this.id = property.substring(property.indexOf(':') + 1, property.length());
                    }
 
                    if(property.contains("name")) {
-                       this.name = property.substring(property.indexOf(":") + 1, property.length());
+                       this.name = property.substring(property.indexOf(':') + 1, property.length());
                    }
 
                    if(property.contains("health_points")) {
-                       this.healthPoints = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                       this.healthPoints = Integer.valueOf(property.substring(property.indexOf(':') + 1, property.length()));
                    }
 
                    if(property.contains("hit_points")) {
-                       this.hitPoints = Integer.valueOf(property.substring(property.indexOf(":") + 1, property.length()));
+                       this.hitPoints = Integer.valueOf(property.substring(property.indexOf(':') + 1, property.length()));
                    }
                });
    }
