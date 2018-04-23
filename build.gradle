@@ -35,7 +35,7 @@ dependencies {
 
 }
 
-mainClassName = "com.wilsonfranca.saintseya.SaintSeyaGame"
+mainClassName = "com.wilsonfranca.saintseya.SaintSeyaGameApplication"
 
 run {
     standardInput = System.in
@@ -43,6 +43,6 @@ run {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'com.wilsonfranca.saintseya.SaintSeyaGame'
+        attributes 'Main-Class': 'com.wilsonfranca.saintseya.SaintSeyaGameApplication'
     }
 }
